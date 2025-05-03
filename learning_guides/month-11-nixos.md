@@ -1,6 +1,6 @@
 # Month 11: NixOS and Declarative Configuration
 
-This month shifts focus to NixOS, a Linux distribution built around a purely functional package manager and declarative system configuration. You'll learn how to deploy, configure, and maintain a NixOS system, taking advantage of its unique properties for reproducible and reliable environments.
+This month focuses on the declarative approach to system configuration using NixOS. By the end of this month, you'll understand the Nix language, be able to create custom packages and modules, and maintain your entire system configuration as code.
 
 ## Time Commitment: ~10 hours/week for 4 weeks
 
@@ -9,7 +9,7 @@ This month shifts focus to NixOS, a Linux distribution built around a purely fun
 By the end of this month, you should be able to:
 
 1. Install and configure a complete NixOS system
-2. Understand and write configurations in the Nix language
+2. Write and understand configurations in the Nix language
 3. Create custom packages and modules
 4. Implement reproducible development environments
 5. Manage complex system configurations declaratively
@@ -25,14 +25,11 @@ By the end of this month, you should be able to:
    - Compare traditional vs. NixOS approaches
    - Study atomic upgrades and rollbacks
    - Learn about Nix store and isolation
-   - Understand package evaluation and derivation concepts
 
 2. **NixOS Installation** (3 hours)
-   - Prepare installation media
-   - Partition and format disks
+   - Follow the [NixOS Installation Guide](/installation/nixos/nixos-installation-guide.md)
    - Install base NixOS system
    - Configure initial system settings
-   - Perform post-installation setup
    - Understand the configuration.nix file structure
 
 3. **Nix Language Basics** (3 hours)
@@ -41,7 +38,6 @@ By the end of this month, you should be able to:
    - Study derivations and packages
    - Learn about evaluation and laziness
    - Practice basic Nix expressions
-   - Understand the Nix expression vs. the Nix programming language
 
 4. **System Configuration Basics** (2 hours)
    - Understand configuration.nix structure
@@ -49,420 +45,314 @@ By the end of this month, you should be able to:
    - Configure basic system settings
    - Apply and test configurations
    - Use nixos-rebuild command
-   - Understand system generations
 
-### Practical Exercises
+### Resources
 
-#### Installing NixOS
+- [NixOS Manual](https://nixos.org/manual/nixos/stable/)
+- [Nix Expression Language](https://nixos.org/manual/nix/stable/expressions/expression-language.html)
+- [Getting Started with NixOS](https://nixos.org/guides/nix-pills/)
 
-1. Download the NixOS ISO:
+## Week 2: Package Management and Development Environments
 
-Download the latest NixOS ISO from the official website: https://nixos.org/download.html
+### Core Learning Activities
 
-2. Create a bootable USB drive:
+1. **NixOS Package Management** (3 hours)
+   - Understand package derivations
+   - Learn to install and remove packages
+   - Search for packages using nix-env and nixpkgs
+   - Pin package versions
+   - Override package attributes
+   - Create custom packages
 
-```bash
-# For Linux
-dd if=nixos-*.iso of=/dev/sdX bs=4M status=progress
-```
+2. **Declarative Package Management** (2 hours)
+   - Configure system-wide packages
+   - Manage user packages with home-manager
+   - Create package collections
+   - Pin nixpkgs versions
+   - Handle package overlays
 
-3. Boot from the USB drive and open a terminal.
+3. **Development Environments** (3 hours)
+   - Create project-specific environments with nix-shell
+   - Configure language-specific environments
+   - Manage developer tools
+   - Use direnv integration
+   - Work with lorri for improved shell experience
 
-4. Prepare your disk (example for a simple setup with one disk):
+4. **Reproducible Builds** (2 hours)
+   - Understand reproducibility principles
+   - Configure deterministic builds
+   - Lock dependencies
+   - Create a fully reproducible development environment
+   - Share configurations with colleagues
 
-```bash
-# Create a new GPT partition table
-parted /dev/sda -- mklabel gpt
+### Resources
 
-# Create a boot partition
-parted /dev/sda -- mkpart ESP fat32 1MiB 512MiB
-parted /dev/sda -- set 1 boot on
+- [Nix Package Manager Guide](https://nixos.org/manual/nix/stable/)
+- [Nixpkgs Manual](https://nixos.org/manual/nixpkgs/stable/)
+- [Home Manager Manual](https://nix-community.github.io/home-manager/)
 
-# Create a swap partition
-parted /dev/sda -- mkpart primary linux-swap 512MiB 4GiB
+## Week 3: System Configuration and Customization
 
-# Create a root partition
-parted /dev/sda -- mkpart primary 4GiB 100%
+### Core Learning Activities
 
-# Format the partitions
-mkfs.fat -F 32 -n boot /dev/sda1
-mkswap -L swap /dev/sda2
-mkfs.ext4 -L nixos /dev/sda3
+1. **NixOS Module System** (3 hours)
+   - Understand the module system architecture
+   - Create custom modules
+   - Implement module options
+   - Handle dependencies between modules
+   - Use conditional configuration
 
-# Mount the partitions
-mount /dev/disk/by-label/nixos /mnt
-mkdir -p /mnt/boot
-mount /dev/disk/by-label/boot /mnt/boot
-swapon /dev/disk/by-label/swap
-```
+2. **System Services Configuration** (3 hours)
+   - Configure system services using NixOS modules
+   - Understand systemd integration
+   - Create custom services
+   - Manage service dependencies
+   - Handle service configuration
 
-5. Generate the initial NixOS configuration:
+3. **User Environment Configuration** (2 hours)
+   - Configure user profiles
+   - Manage dotfiles declaratively
+   - Configure desktop environment
+   - Set up program configurations
+   - Handle user service management
 
-```bash
-nixos-generate-config --root /mnt
-```
+4. **Hardware Configuration** (2 hours)
+   - Understand hardware-configuration.nix
+   - Configure drivers and kernel modules
+   - Handle hardware-specific settings
+   - Configure graphics and display
+   - Manage power management
 
-6. Edit the configuration:
+### Resources
 
-```bash
-nano /mnt/etc/nixos/configuration.nix
-```
+- [NixOS Module System](https://nixos.org/manual/nixos/stable/index.html#sec-writing-modules)
+- [Writing NixOS Modules](https://nixos.wiki/wiki/Module)
 
-Here's a basic NixOS configuration:
+## Week 4: Advanced NixOS and Integration
+
+### Core Learning Activities
+
+1. **NixOS Generations and System Management** (2 hours)
+   - Manage system generations
+   - Perform system rollbacks
+   - Understand boot management
+   - Clean up old generations
+   - Test configurations
+
+2. **Distributed Builds and Caching** (2 hours)
+   - Configure distributed builds
+   - Set up binary caches
+   - Create private caches
+   - Optimize build times
+   - Manage cache signing keys
+
+3. **Multiple System Configuration** (3 hours)
+   - Create configurations for multiple machines
+   - Share common configurations
+   - Manage machine-specific settings
+   - Deploy configurations remotely
+   - Use NixOps for multi-machine deployment
+
+4. **Integration with Existing Workflow** (3 hours)
+   - Integrate NixOS with version control
+   - Develop a workflow for configuration changes
+   - Set up continuous integration
+   - Test configurations automatically
+   - Deploy configurations safely
+
+### Resources
+
+- [NixOS Wiki](https://nixos.wiki/)
+- [Nix Flakes](https://nixos.wiki/wiki/Flakes)
+- [NixOps Manual](https://nixos.org/manual/nixops/stable/)
+
+## Projects and Exercises
+
+### Project 1: Complete NixOS Environment
+
+1. Install NixOS from scratch following the installation guide
+2. Configure your system with the following specifications:
+   - User account with appropriate permissions
+   - Network configuration with firewall rules
+   - Development environment for your primary languages
+   - Desktop environment or window manager configuration
+   - System services for development (databases, web servers)
+
+3. Create a basic configuration.nix:
 
 ```nix
 { config, pkgs, ... }:
 
 {
   imports =
-    [ # Include the results of the hardware scan.
+    [ # Include the results of the hardware scan
       ./hardware-configuration.nix
     ];
 
-  # Boot loader configuration
+  # Boot loader
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   # Networking
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "nixos-dev";
   networking.networkmanager.enable = true;
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 22 80 443 ];
+  };
 
-  # Set your time zone.
-  time.timeZone = "America/New_York";
+  # Time zone and locale
+  time.timeZone = "America/New_York"; # Adjust for your location
+  i18n.defaultLocale = "en_US.UTF-8";
 
-  # Define a user account. Don't forget to set a password with 'passwd'.
+  # User account
   users.users.yourusername = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" ];
-    initialPassword = "changeme";
+    extraGroups = [ "wheel" "networkmanager" "docker" ];
+    shell = pkgs.zsh;
   };
 
-  # List packages installed in system profile
+  # Allow unfree packages
+  nixpkgs.config.allowUnfree = true;
+
+  # System packages
   environment.systemPackages = with pkgs; [
-    vim
-    wget
-    git
-    firefox
-    htop
+    # Basic utilities
+    vim git wget curl firefox htop
+
+    # Development tools
+    vscode neovim
+    python311 python311Packages.pip
+    nodejs_20
+    gcc gnumake
+
+    # System tools
+    tmux zsh oh-my-zsh
   ];
 
-  # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
-
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
-
-  # Enable sound.
-  sound.enable = true;
-  hardware.pulseaudio.enable = true;
-
-  # Enable touchpad support.
-  services.xserver.libinput.enable = true;
-
-  # This value determines the NixOS release with which your system is to be
-  # compatible. Change this only after NixOS release notes say you should.
-  system.stateVersion = "23.05"; # Did you read the comment?
-}
-```
-
-7. Install NixOS:
-
-```bash
-nixos-install
-```
-
-8. Set the root password when prompted.
-
-9. Reboot into your new NixOS system:
-
-```bash
-reboot
-```
-
-#### Learning Nix Language Basics
-
-1. Open a terminal in your NixOS system.
-
-2. Create a directory for your Nix examples:
-
-```bash
-mkdir -p ~/nix-examples
-cd ~/nix-examples
-```
-
-3. Create a simple Nix expression file:
-
-```bash
-nano simple.nix
-```
-
-Add the following content:
-
-```nix
-# Basic values
-{
-  aString = "Hello, NixOS!";
-  anInteger = 42;
-  aFloat = 3.14;
-  aBoolean = true;
-  aNull = null;
-  
-  # Lists
-  aList = [ 1 2 3 4 5 ];
-  aListOfMixed = [ 1 "two" true ];
-  
-  # Attribute sets (similar to dictionaries)
-  anAttrSet = {
-    name = "NixOS";
-    version = "23.05";
-    website = "https://nixos.org";
-  };
-  
-  # Nested attribute sets
-  nested = {
-    a = {
-      b = {
-        c = "nested value";
-      };
-    };
-  };
-  
-  # Functions
-  increment = x: x + 1;
-  greet = name: "Hello, ${name}!";
-  
-  # Function with multiple arguments (curried)
-  add = a: b: a + b;
-  
-  # Function with attribute set argument
-  makeUser = { name, email, ... }: {
-    username = name;
-    contactEmail = email;
-    created = "2023-01-01";
-  };
-}
-```
-
-4. Evaluate the Nix expression using `nix-instantiate`:
-
-```bash
-nix-instantiate --eval simple.nix
-```
-
-5. Create a file to practice with strings and string interpolation:
-
-```bash
-nano strings.nix
-```
-
-Add the following content:
-
-```nix
-{
-  simple = "A simple string";
-  
-  # String concatenation
-  concat = "Hello, " + "NixOS!";
-  
-  # Multi-line string
-  multiline = ''
-    This is a multi-line
-    string in Nix.
-    It preserves line breaks.
-  '';
-  
-  # String interpolation
-  name = "NixOS";
-  greeting = "Hello, ${name}!";
-  
-  # Escaping
-  dollar = "The price is $10";  # No need to escape $ unless using ${}
-  literal = ''
-    This is a ${
-      # We need to calculate this
-      toString (5 + 5)
-    } dollar product.
-  '';
-  
-  # Path as string
-  path = toString /etc/nixos;
-  
-  # String operations
-  length = builtins.stringLength "Hello";
-  substring = builtins.substring 0 5 "Hello, World!";
-}
-```
-
-6. Create a file to practice with functions:
-
-```bash
-nano functions.nix
-```
-
-Add the following content:
-
-```nix
-let
-  # Simple function
-  double = x: x * 2;
-  
-  # Function with multiple arguments (curried)
-  add = a: b: a + b;
-  
-  # Function using let-in
-  addAndDouble = a: b:
-    let
-      sum = a + b;
-    in
-      double sum;
-  
-  # Function with attribute set destructuring
-  makeFullName = { firstName, lastName, ... }: "${firstName} ${lastName}";
-  
-  # Function with default values
-  greet = { name ? "Anonymous", greeting ? "Hello" }: "${greeting}, ${name}!";
-  
-  # Recursive function (factorial)
-  factorial = n:
-    if n == 0
-    then 1
-    else n * factorial (n - 1);
+  # Services
+  services = {
+    # SSH server
+    openssh.enable = true;
     
-  # Anonymous function
-  anonymousFunc = (x: x * x);
-  
-  # Higher-order function
-  applyTwice = f: x: f (f x);
-in
-{
-  doubleOfFive = double 5;
-  sumOfNumbers = add 3 4;
-  addAndDoubleResult = addAndDouble 3 4;
-  fullName = makeFullName { firstName = "John"; lastName = "Doe"; };
-  greeting1 = greet { name = "NixOS"; };
-  greeting2 = greet { };  # Uses defaults
-  factorialOfFive = factorial 5;
-  squareOfFour = anonymousFunc 4;
-  quadrupleOfThree = applyTwice double 3;
-}
-```
-
-7. Create a file to practice with conditionals:
-
-```bash
-nano conditionals.nix
-```
-
-Add the following content:
-
-```nix
-let
-  checkNumber = n:
-    if n > 0 then "positive"
-    else if n < 0 then "negative"
-    else "zero";
-  
-  # Boolean operators
-  hasAccess = user: permission:
-    user.isAdmin || user.permissions ? ${permission};
-  
-  # With attribute set
-  getEnvironmentVariables = environment:
-    if environment == "development" then {
-      DEBUG = true;
-      API_URL = "http://localhost:3000";
-    } else if environment == "production" then {
-      DEBUG = false;
-      API_URL = "https://api.example.com";
-    } else {
-      DEBUG = false;
-      API_URL = "https://staging.example.com";
+    # X11 and window manager
+    xserver = {
+      enable = true;
+      desktopManager.xterm.enable = false;
+      displayManager.lightdm.enable = true;
+      windowManager.i3.enable = true;
     };
-in
-{
-  numCheck1 = checkNumber 5;
-  numCheck2 = checkNumber (-3);
-  numCheck3 = checkNumber 0;
-  
-  accessResult1 = hasAccess { isAdmin = true; permissions = {}; } "read";
-  accessResult2 = hasAccess { isAdmin = false; permissions = { read = true; }; } "read";
-  accessResult3 = hasAccess { isAdmin = false; permissions = { write = true; }; } "read";
-  
-  devEnv = getEnvironmentVariables "development";
-  prodEnv = getEnvironmentVariables "production";
-  stagingEnv = getEnvironmentVariables "staging";
+  };
+
+  # Docker
+  virtualisation.docker.enable = true;
+
+  # This value determines the NixOS release with which your system is compatible
+  system.stateVersion = "23.11";
 }
 ```
 
-8. Create a file to practice with builtins:
+### Project 2: Development Environment Shells
 
-```bash
-nano builtins.nix
-```
+Create shell.nix files for at least three different development environments:
 
-Add the following content:
+1. Python development environment:
 
 ```nix
-{
-  # Type checking functions
-  isStringCheck = builtins.isString "Hello";
-  isIntCheck = builtins.isInt 42;
-  
-  # List operations
-  listLength = builtins.length [1 2 3 4 5];
-  elementAt = builtins.elemAt ["a" "b" "c"] 1; # Gets "b"
-  
-  # Attribute set operations
-  hasAttr = builtins.hasAttr "name" { name = "value"; };
-  getAttr = builtins.getAttr "name" { name = "value"; };
-  attrNames = builtins.attrNames { a = 1; b = 2; c = 3; };
-  
-  # Converting between types
-  toString = builtins.toString 42;
-  toPath = builtins.toPath "/etc/nixos";
-  
-  # File operations
-  fileExists = builtins.pathExists /etc/nixos/configuration.nix;
-  fileContents = builtins.readFile ./simple.nix;
-  
-  # Importing files
-  imported = import ./simple.nix;
-  
-  # JSON operations
-  jsonFile = builtins.toJSON { name = "value"; list = [1 2 3]; };
-  parsedJson = builtins.fromJSON ''{"name": "value", "list": [1, 2, 3]}'';
-  
-  # Debugging
-  trace = builtins.trace "This is a debug message" "The result";
+{ pkgs ? import <nixpkgs> {} }:
+
+pkgs.mkShell {
+  buildInputs = with pkgs; [
+    # Python with packages
+    (python311.withPackages(ps: with ps; [
+      pip
+      virtualenv
+      pytest
+      black
+      mypy
+      numpy
+      pandas
+    ]))
+    
+    # Development tools
+    poetry
+    gnumake
+  ];
+
+  shellHook = ''
+    echo "Python development environment activated!"
+    export PS1="\e[1;34m(py-dev)\e[0m \w $ "
+  '';
 }
 ```
 
-9. Evaluate each of these files to see the results:
+2. Node.js development environment:
 
-```bash
-nix-instantiate --eval strings.nix
-nix-instantiate --eval functions.nix
-nix-instantiate --eval conditionals.nix
-nix-instantiate --eval builtins.nix
+```nix
+{ pkgs ? import <nixpkgs> {} }:
+
+pkgs.mkShell {
+  buildInputs = with pkgs; [
+    nodejs_20
+    yarn
+    nodePackages.typescript
+    nodePackages.eslint
+    nodePackages.prettier
+  ];
+
+  shellHook = ''
+    echo "Node.js development environment activated!"
+    export PS1="\e[1;32m(node-dev)\e[0m \w $ "
+    export PATH="$PWD/node_modules/.bin:$PATH"
+  '';
+}
 ```
 
-#### Creating a Basic NixOS Module
+3. System monitoring tool development environment:
 
-1. Create a directory for your custom modules:
+```nix
+{ pkgs ? import <nixpkgs> {} }:
 
-```bash
-sudo mkdir -p /etc/nixos/modules
+pkgs.mkShell {
+  buildInputs = with pkgs; [
+    # Base Python
+    (python311.withPackages(ps: with ps; [
+      psutil
+      py-cpuinfo
+      blessed
+      pandas
+      typer
+    ]))
+    
+    # System utilities for testing
+    htop
+    sysstat
+    lm_sensors
+    iproute2
+  ];
+
+  shellHook = ''
+    echo "System monitoring development environment activated!"
+    export PS1="\e[1;35m(sysmon-dev)\e[0m \w $ "
+  '';
+}
 ```
 
-2. Create a simple module for a development environment:
+### Project 3: Custom NixOS Module
 
-```bash
-sudo nano /etc/nixos/modules/development.nix
+Create a custom NixOS module that configures a complete development workspace:
+
+1. Create a directory structure:
+
+```
+~/nixos-config/
+├── configuration.nix
+├── hardware-configuration.nix
+└── modules/
+    └── dev-workspace.nix
 ```
 
-Add the following content:
+2. Implement dev-workspace.nix:
 
 ```nix
 { config, lib, pkgs, ... }:
@@ -470,114 +360,251 @@ Add the following content:
 with lib;
 
 let
-  cfg = config.myModules.development;
+  cfg = config.services.dev-workspace;
 in {
-  options.myModules.development = {
-    enable = mkEnableOption "development environment";
+  options.services.dev-workspace = {
+    enable = mkEnableOption "development workspace configuration";
     
-    username = mkOption {
+    user = mkOption {
       type = types.str;
-      description = "The username for the development environment";
+      description = "The user for whom to configure the development workspace";
     };
     
     languages = mkOption {
       type = types.listOf types.str;
       default = [];
+      example = [ "python" "javascript" "go" ];
       description = "Programming languages to install";
     };
     
     editors = mkOption {
       type = types.listOf types.str;
-      default = ["vim"];
+      default = [ "vim" ];
+      example = [ "vim" "vscode" "emacs" ];
       description = "Text editors to install";
+    };
+    
+    extraPackages = mkOption {
+      type = types.listOf types.package;
+      default = [];
+      description = "Extra packages to install";
     };
   };
   
   config = mkIf cfg.enable {
-    # Install development tools
+    # Install language-specific packages
     environment.systemPackages = with pkgs; [
+      # Base development tools
       git
       gnumake
       gcc
       gdb
     ] 
     # Add language-specific packages
-    ++ (if elem "python" cfg.languages then [ python3 python3Packages.pip ] else [])
-    ++ (if elem "rust" cfg.languages then [ rustc cargo ] else [])
+    ++ (if elem "python" cfg.languages then [ python311 python311Packages.pip python311Packages.black ] else [])
+    ++ (if elem "javascript" cfg.languages then [ nodejs_20 nodePackages.npm nodePackages.yarn ] else [])
     ++ (if elem "go" cfg.languages then [ go ] else [])
-    ++ (if elem "nodejs" cfg.languages then [ nodejs ] else [])
+    ++ (if elem "rust" cfg.languages then [ rustc cargo rustfmt ] else [])
     # Add editors
-    ++ (if elem "vim" cfg.editors then [ vim ] else [])
+    ++ (if elem "vim" cfg.editors then [ vim neovim ] else [])
+    ++ (if elem "vscode" cfg.editors then [ vscode ] else [])
     ++ (if elem "emacs" cfg.editors then [ emacs ] else [])
-    ++ (if elem "vscode" cfg.editors then [ vscode ] else []);
-    
-    # Create development directory
-    system.activationScripts.createDevDir = ''
-      mkdir -p /home/${cfg.username}/projects
-      chown ${cfg.username}:users /home/${cfg.username}/projects
-    '';
+    # Add extra packages
+    ++ cfg.extraPackages;
     
     # Configure Git globally
     programs.git = {
       enable = true;
       config = {
         init.defaultBranch = "main";
-        core.editor = if elem "vim" cfg.editors then "vim" 
-                      else if elem "emacs" cfg.editors then "emacs"
-                      else "nano";
       };
     };
+    
+    # Enable Docker if needed
+    virtualisation.docker.enable = true;
+    users.users.${cfg.user}.extraGroups = [ "docker" ];
+    
+    # Configure terminal and shell
+    programs.zsh.enable = true;
+    users.users.${cfg.user}.shell = pkgs.zsh;
+    
+    # Create project directories
+    system.activationScripts.devWorkspace = ''
+      mkdir -p /home/${cfg.user}/projects
+      mkdir -p /home/${cfg.user}/projects/python
+      mkdir -p /home/${cfg.user}/projects/javascript
+      mkdir -p /home/${cfg.user}/projects/experiments
+      chown -R ${cfg.user}:users /home/${cfg.user}/projects
+    '';
   };
 }
 ```
 
-3. Update your main configuration.nix to use the new module:
-
-```bash
-sudo nano /etc/nixos/configuration.nix
-```
-
-Add the module to your imports and enable it:
+3. Import and use in configuration.nix:
 
 ```nix
 { config, pkgs, ... }:
 
 {
   imports =
-    [ # Include the results of the hardware scan.
+    [ 
       ./hardware-configuration.nix
-      # Include your custom module
-      ./modules/development.nix
+      ./modules/dev-workspace.nix
     ];
-
-  # Enable the development module
-  myModules.development = {
+  
+  # Enable the development workspace
+  services.dev-workspace = {
     enable = true;
-    username = "yourusername";  # Replace with your username
-    languages = [ "python" "rust" "nodejs" ];
+    user = "yourusername";
+    languages = [ "python" "javascript" "rust" ];
     editors = [ "vim" "vscode" ];
+    extraPackages = with pkgs; [
+      firefox
+      tmux
+      ripgrep
+      fd
+    ];
   };
-
-  # Existing configuration follows...
+  
+  # Rest of your system configuration
+  # ...
 }
 ```
 
-4. Apply the new configuration:
+### Project 4: Full System Configuration with Home Manager
 
-```bash
-sudo nixos-rebuild switch
+Set up a fully declarative system with Home Manager:
+
+1. Add home-manager as a NixOS module:
+
+```nix
+{ config, pkgs, ... }:
+
+{
+  imports = [ 
+    <home-manager/nixos>
+  ];
+
+  # Home Manager configuration
+  home-manager.users.yourusername = { pkgs, ... }: {
+    # Home Manager packages
+    home.packages = with pkgs; [
+      ripgrep
+      fd
+      bat
+      exa
+      fzf
+    ];
+
+    # Git configuration
+    programs.git = {
+      enable = true;
+      userName = "Your Name";
+      userEmail = "your.email@example.com";
+      extraConfig = {
+        init.defaultBranch = "main";
+        pull.rebase = true;
+      };
+    };
+
+    # Neovim configuration
+    programs.neovim = {
+      enable = true;
+      viAlias = true;
+      vimAlias = true;
+      extraConfig = ''
+        set number
+        set relativenumber
+        set tabstop=4
+        set shiftwidth=4
+        set expandtab
+        set smartindent
+      '';
+      plugins = with pkgs.vimPlugins; [
+        vim-nix
+        vim-surround
+        vim-commentary
+      ];
+    };
+
+    # Tmux configuration
+    programs.tmux = {
+      enable = true;
+      shortcut = "a";
+      keyMode = "vi";
+      customPaneNavigationAndResize = true;
+      extraConfig = ''
+        # Status bar
+        set -g status-bg black
+        set -g status-fg white
+        set -g status-left "#[fg=green]#S #[fg=yellow]#I #[fg=cyan]#P"
+        set -g status-right "#[fg=cyan]%d %b %R"
+      '';
+    };
+
+    # Zsh configuration
+    programs.zsh = {
+      enable = true;
+      enableAutosuggestions = true;
+      enableSyntaxHighlighting = true;
+      oh-my-zsh = {
+        enable = true;
+        theme = "robbyrussell";
+        plugins = [ "git" "docker" "python" "node" ];
+      };
+      shellAliases = {
+        ll = "ls -la";
+        update = "sudo nixos-rebuild switch";
+        gs = "git status";
+        gp = "git push";
+      };
+    };
+
+    # Allow unfree packages
+    nixpkgs.config.allowUnfree = true;
+
+    # Enable home-manager
+    programs.home-manager.enable = true;
+  };
+}
 ```
 
-5. Verify that your development environment is set up correctly:
+## Assessment
 
-```bash
-# Check if git is installed
-git --version
+You should now be able to:
 
-# Check if Python is installed
-python3 --version
+1. Install and configure NixOS from scratch
+2. Write and modify configurations in the Nix language
+3. Create and manage development environments with Nix
+4. Build custom NixOS modules
+5. Manage your entire system configuration declaratively
+6. Perform system updates and rollbacks effectively
 
-# Check if Rust is installed
-rustc --version
+## Next Steps
 
-# Check if your projects directory was create
+In Month 12, we'll build on this knowledge by:
+- Creating a professional portfolio showcasing your Linux skills
+- Developing advanced projects that demonstrate your expertise
+- Contributing to open source projects
+- Preparing for professional Linux/DevOps roles
+
+## Cross-References
+
+- The [NixOS Installation Guide](/installation/nixos/nixos-installation-guide.md) provides detailed steps for initial setup
+- For performance optimization, refer to [System Maintenance](/learning_guides/month-07-maintenance.md)
+- For network configuration, see the [Networking Guide](/troubleshooting/networking.md)
+- Review [Month 6: Containerization](/learning_guides/month-06-containers.md) for integrating containers with NixOS
+- See [Version Control Strategy](/configuration/development/docs/version_control_strategy.md) for managing NixOS configurations
+
+## Acknowledgements
+
+This learning guide was developed with assistance from Anthropic's Claude AI assistant, which helped with:
+- Learning path structure and organization
+- Nix code examples and configuration templates
+- Project ideas and exercises
+
+Claude was used as a development aid while all final implementation decisions and verification were performed by Joshua Michael Hall.
+
+## Disclaimer
+
+This guide is provided "as is", without warranty of any kind. Always make backups before making system changes. NixOS's rollback feature provides additional protection, but proper backups are still essential.
