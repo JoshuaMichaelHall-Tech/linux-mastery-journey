@@ -1,0 +1,412 @@
+# configuration.nix - Example NixOS configuration for software development
+# Part of the Linux Mastery Journey project
+
+{ config, pkgs, lib, ... }:
+
+{
+  imports =
+    [ # Include the results of the hardware scan
+      ./hardware-configuration.nix
+      # Include home-manager as a NixOS module
+      <home-manager/nixos>
+    ];
+
+  # Bootloader configuration
+  boot = {
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+      # Show menu for 5 seconds
+      timeout = 5;
+    };
+    # Use the latest stable kernel
+    kernelPackages = pkgs.linuxPackages_latest;
+    # Enable support for filesystems
+    supportedFilesystems = [ "btrfs" "ntfs" "exfat" ];
+    # Kernel parameters for better performance
+    kernelParams = [ "quiet" "mitigations=off" ];
+  };
+
+  # Networking configuration
+  networking = {
+    hostName = "nixos-dev"; # Set your hostname
+    # Use NetworkManager for wireless
+    networkmanager.enable = true;
+    # Configure firewall
+    firewall = {
+      enable = true;
+      allowedTCPPorts = [ 22 80 443 3000 5000 8000 8080 ];
+      allowedUDPPorts = [ 53 ];
+    };
+  };
+
+  # Set your time zone
+  time.timeZone = "America/New_York";  # Adjust to your timezone
+
+  # Configure locale and keyboard
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+    extraLocaleSettings = {
+      LC_ADDRESS = "en_US.UTF-8";
+      LC_IDENTIFICATION = "en_US.UTF-8";
+      LC_MEASUREMENT = "en_US.UTF-8";
+      LC_MONETARY = "en_US.UTF-8";
+      LC_NAME = "en_US.UTF-8";
+      LC_NUMERIC = "en_US.UTF-8";
+      LC_PAPER = "en_US.UTF-8";
+      LC_TELEPHONE = "en_US.UTF-8";
+      LC_TIME = "en_US.UTF-8";
+    };
+  };
+
+  # Console configuration
+  console = {
+    font = "Lat2-Terminus16";
+    keyMap = "us";
+  };
+
+  # X11 and display configuration
+  services.xserver = {
+    enable = true;
+    
+    # Configure display manager and window manager/desktop environment
+    # Uncomment one of the following sections based on preference
+    
+    # Option 1: i3 window manager
+    displayManager.lightdm.enable = true;
+    windowManager.i3 = {
+      enable = true;
+      extraPackages = with pkgs; [
+        i3status
+        i3lock
+        i3blocks
+        dmenu
+        rofi
+        picom
+      ];
+    };
+    
+    # Option 2: Sway (Wayland)
+    # displayManager.gdm.enable = true;
+    # displayManager.gdm.wayland = true;
+    
+    # Option 3: GNOME
+    # displayManager.gdm.enable = true;
+    # desktopManager.gnome.enable = true;
+    
+    # Option 4: KDE Plasma
+    # displayManager.sddm.enable = true;
+    # desktopManager.plasma5.enable = true;
+    
+    # Configure keyboard layout
+    layout = "us";
+    
+    # Enable touchpad support
+    libinput = {
+      enable = true;
+      touchpad = {
+        naturalScrolling = true;
+        tapping = true;
+        disableWhileTyping = true;
+      };
+    };
+  };
+
+  # Enable sound
+  sound.enable = true;
+  hardware.pulseaudio.enable = true;
+  
+  # Enable Bluetooth
+  hardware.bluetooth.enable = true;
+  services.blueman.enable = true;
+
+  # Enable OpenGL for hardware acceleration
+  hardware.opengl = {
+    enable = true;
+    driSupport = true;
+    driSupport32Bit = true;  # For 32-bit applications
+  };
+  
+  # GPU Driver Selection (uncomment appropriate section)
+  
+  # For Intel GPUs
+  # hardware.opengl.extraPackages = with pkgs; [
+  #   intel-media-driver
+  #   vaapiIntel
+  #   vaapiVdpau
+  #   libvdpau-va-gl
+  # ];
+  
+  # For NVIDIA GPUs
+  # hardware.nvidia = {
+  #   modesetting.enable = true;
+  #   powerManagement.enable = true;
+  #   open = false;  # Use proprietary drivers
+  #   package = config.boot.kernelPackages.nvidiaPackages.stable;
+  # };
+  
+  # For AMD GPUs
+  # hardware.opengl.extraPackages = with pkgs; [
+  #   amdvlk
+  #   rocm-opencl-icd
+  #   rocm-opencl-runtime
+  # ];
+
+  # User configuration
+  users.users.yourusername = {
+    isNormalUser = true;
+    description = "Your Name";
+    extraGroups = [ "wheel" "networkmanager" "audio" "video" "docker" ];
+    shell = pkgs.zsh;  # Set default shell
+    # Ensure password is set during installation or use initialPassword
+    # initialPassword = "changeme";
+  };
+
+  # Enable zsh
+  programs.zsh.enable = true;
+  
+  # Allow unfree packages (needed for some drivers and software)
+  nixpkgs.config.allowUnfree = true;
+
+  # System packages
+  environment.systemPackages = with pkgs; [
+    # Core utilities
+    wget
+    curl
+    git
+    vim
+    neovim
+    tmux
+    htop
+    ripgrep
+    fd
+    exa
+    bat
+    jq
+    unzip
+    zip
+    rsync
+    
+    # Development tools
+    gcc
+    gnumake
+    cmake
+    pkg-config
+    clang
+    clang-tools
+    
+    # Terminal applications
+    alacritty
+    kitty
+    
+    # GUI applications
+    firefox
+    chromium
+    
+    # File manager
+    pcmanfm
+    ranger
+    
+    # Media 
+    mpv
+    feh
+    
+    # Fonts
+    dejavu_fonts
+    noto-fonts
+    noto-fonts-emoji
+    liberation_ttf
+    fira-code
+    
+    # Networking
+    networkmanager
+    networkmanagerapplet
+  ];
+
+  # Development environment - Languages and tools
+  # Uncomment and customize based on your needs
+  
+  # Python
+  environment.systemPackages = with pkgs; [
+    python311
+    python311Packages.pip
+    python311Packages.virtualenv
+    python311Packages.poetry
+    python311Packages.black
+    python311Packages.isort
+    python311Packages.mypy
+    python311Packages.pytest
+  ];
+  
+  # JavaScript/Node.js
+  environment.systemPackages = with pkgs; [
+    nodejs_20
+    yarn
+    nodePackages.pnpm
+    nodePackages.typescript
+    nodePackages.eslint
+    nodePackages.prettier
+  ];
+  
+  # Ruby
+  # environment.systemPackages = with pkgs; [
+  #   ruby_3_2
+  #   rubyPackages.bundler
+  #   rubyPackages.solargraph
+  # ];
+  
+  # Rust
+  # environment.systemPackages = with pkgs; [
+  #   rustc
+  #   cargo
+  #   rustfmt
+  #   rust-analyzer
+  # ];
+  
+  # Go
+  # environment.systemPackages = with pkgs; [
+  #   go
+  #   gopls
+  #   golangci-lint
+  # ];
+
+  # Enable Docker
+  virtualisation.docker = {
+    enable = true;
+    enableOnBoot = true;
+    # Enable Docker Compose
+    compose.enable = true;
+  };
+  
+  # Enable OpenSSH
+  services.openssh = {
+    enable = true;
+    settings = {
+      PermitRootLogin = "no";
+      PasswordAuthentication = false;
+    };
+  };
+
+  # Home Manager configuration
+  home-manager.users.yourusername = { pkgs, ... }: {
+    # Home Manager packages
+    home.packages = with pkgs; [
+      fzf
+      direnv
+      starship
+    ];
+    
+    # Programs configuration
+    programs = {
+      # Git configuration
+      git = {
+        enable = true;
+        userName = "Your Name";
+        userEmail = "you@example.com";
+        extraConfig = {
+          init.defaultBranch = "main";
+          pull.rebase = true;
+          core.editor = "nvim";
+        };
+      };
+      
+      # Zsh configuration
+      zsh = {
+        enable = true;
+        enableAutosuggestions = true;
+        enableSyntaxHighlighting = true;
+        oh-my-zsh = {
+          enable = true;
+          plugins = [ "git" "docker" "tmux" "sudo" ];
+          theme = "robbyrussell";
+        };
+        initExtra = ''
+          # Custom Zsh configuration
+          bindkey -e  # Emacs keybindings
+          
+          # Aliases
+          alias ls='exa --color=auto'
+          alias ll='exa -la'
+          alias cat='bat'
+          alias g='git'
+          
+          # Environment variables
+          export EDITOR=nvim
+          export VISUAL=nvim
+        '';
+      };
+      
+      # Tmux configuration
+      tmux = {
+        enable = true;
+        keyMode = "vi";
+        customPaneNavigationAndResize = true;
+        extraConfig = ''
+          # Custom Tmux configuration
+          set -g mouse on
+          set -g history-limit 10000
+          set -g default-terminal "tmux-256color"
+          set -ag terminal-overrides ",xterm-256color:RGB"
+        '';
+      };
+      
+      # Neovim configuration
+      neovim = {
+        enable = true;
+        viAlias = true;
+        vimAlias = true;
+        extraConfig = ''
+          " Basic settings
+          set number
+          set relativenumber
+          set expandtab
+          set tabstop=2
+          set shiftwidth=2
+          set smartindent
+          set termguicolors
+          
+          " Key mappings
+          let mapleader = " "
+          nnoremap <C-h> <C-w>h
+          nnoremap <C-j> <C-w>j
+          nnoremap <C-k> <C-w>k
+          nnoremap <C-l> <C-w>l
+        '';
+        plugins = with pkgs.vimPlugins; [
+          vim-nix
+          nvim-treesitter
+          telescope-nvim
+          plenary-nvim
+          which-key-nvim
+          vim-fugitive
+          gruvbox
+        ];
+      };
+      
+      # Starship prompt
+      starship = {
+        enable = true;
+        enableZshIntegration = true;
+      };
+      
+      # Direnv for per-directory environment variables
+      direnv = {
+        enable = true;
+        enableZshIntegration = true;
+        nix-direnv.enable = true;
+      };
+    };
+    
+    # Dotfiles management
+    home.file = {
+      # Example: create a custom config file
+      ".config/i3/config".source = ./dotfiles/i3-config;
+    };
+    
+    # Let Home Manager install and manage itself
+    programs.home-manager.enable = true;
+  };
+
+  # System state version (do not change after installation)
+  system.stateVersion = "23.11"; # Update to match your NixOS version
+}

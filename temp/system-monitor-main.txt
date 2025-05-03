@@ -1,0 +1,497 @@
+#!/usr/bin/env python
+"""
+Linux System Monitor - Main Module
+
+This module serves as the entry point for the terminal-based system monitoring tool.
+It initializes the application, sets up the UI, and manages the main event loop.
+"""
+
+import asyncio
+import signal
+import sys
+import time
+from datetime import datetime
+from typing import Dict, List, Optional, Tuple
+
+import psutil
+import typer
+from blessed import Terminal
+
+from monitor.collectors.cpu import CPUCollector
+from monitor.collectors.disk import DiskCollector
+from monitor.collectors.memory import MemoryCollector
+from monitor.collectors.network import NetworkCollector
+from monitor.collectors.process import ProcessCollector
+from monitor.config import Config
+from monitor.processors.data_processor import DataProcessor
+from monitor.ui.dashboard import Dashboard
+from monitor.ui.graphs import BarGraph, LineGraph, Sparkline
+from monitor.ui.widgets import Header, ProcessTable, ResourceMeter, StatusBar
+
+# Initialize the Typer CLI app
+app = typer.Typer(help="Terminal-based system monitoring tool")
+
+# Define global variables for the application
+term = Terminal()
+config: Optional[Config] = None
+dashboard: Optional[Dashboard] = None
+running: bool = True
+
+
+class SystemMonitor:
+    """
+    Main system monitor class that manages data collection, processing, and visualization.
+    """
+
+    def __init__(self, update_interval: float = 1.0, layout: str = "detailed", theme: str = "dark"):
+        """
+        Initialize the system monitor.
+
+        Args:
+            update_interval: Time in seconds between updates
+            layout: UI layout type ("detailed", "compact", "minimal")
+            theme: UI color theme ("dark", "light")
+        """
+        self.update_interval = update_interval
+        self.layout = layout
+        self.theme = theme
+        
+        # Initialize configuration
+        self.config = Config()
+        self.config.load()
+        
+        # Override config with command line arguments if provided
+        if update_interval != 1.0:
+            self.config.general.update_interval = update_interval
+        if layout != "detailed":
+            self.config.display.layout = layout
+        if theme != "dark":
+            self.config.display.theme = theme
+            
+        # Initialize collectors
+        self.cpu_collector = CPUCollector()
+        self.memory_collector = MemoryCollector()
+        self.disk_collector = DiskCollector()
+        self.network_collector = NetworkCollector()
+        self.process_collector = ProcessCollector()
+        
+        # Initialize data processor
+        self.data_processor = DataProcessor()
+        
+        # Initialize UI components
+        self.term = Terminal()
+        self.header = Header(self.term, self.config)
+        self.cpu_graph = LineGraph(self.term, self.config, title="CPU Usage", unit="%", max_value=100)
+        self.memory_meter = ResourceMeter(self.term, self.config, title="Memory Usage")
+        self.disk_meter = ResourceMeter(self.term, self.config, title="Disk Usage")
+        self.network_graph = Sparkline(self.term, self.config, title="Network Traffic")
+        self.process_table = ProcessTable(self.term, self.config)
+        self.status_bar = StatusBar(self.term, self.config)
+        
+        # Initialize dashboard
+        self.dashboard = Dashboard(
+            self.term,
+            self.config,
+            [
+                self.header,
+                self.cpu_graph,
+                self.memory_meter,
+                self.disk_meter, 
+                self.network_graph,
+                self.process_table,
+                self.status_bar
+            ]
+        )
+        
+        # Initialize data storage
+        self.cpu_history: List[float] = []
+        self.memory_history: List[Tuple[float, float]] = []  # (used, total)
+        self.disk_io_history: List[Tuple[float, float]] = []  # (read, write)
+        self.network_history: List[Tuple[float, float]] = []  # (download, upload)
+        
+        # Storage for current data
+        self.current_data: Dict = {}
+        
+        # Initialize system info
+        self.system_info = {
+            "hostname": self._get_hostname(),
+            "os_info": self._get_os_info(),
+            "boot_time": self._get_boot_time(),
+            "cpu_info": self._get_cpu_info(),
+        }
+        
+        # Setup signal handlers for clean termination
+        signal.signal(signal.SIGINT, self._handle_signal)
+        signal.signal(signal.SIGTERM, self._handle_signal)
+
+    def _get_hostname(self) -> str:
+        """Get the system hostname."""
+        import socket
+        return socket.gethostname()
+
+    def _get_os_info(self) -> Dict[str, str]:
+        """Get operating system information."""
+        import platform
+        return {
+            "system": platform.system(),
+            "release": platform.release(),
+            "version": platform.version(),
+        }
+
+    def _get_boot_time(self) -> str:
+        """Get system boot time formatted as a string."""
+        boot_time = datetime.fromtimestamp(psutil.boot_time())
+        return boot_time.strftime("%Y-%m-%d %H:%M:%S")
+
+    def _get_cpu_info(self) -> Dict[str, str]:
+        """Get CPU information."""
+        import cpuinfo
+        info = cpuinfo.get_cpu_info()
+        return {
+            "brand": info.get("brand_raw", "Unknown"),
+            "arch": info.get("arch", "Unknown"),
+            "cores": psutil.cpu_count(logical=False),
+            "threads": psutil.cpu_count(logical=True),
+        }
+
+    def _handle_signal(self, signum, frame):
+        """Handle termination signals gracefully."""
+        self.stop()
+
+    async def collect_data(self):
+        """Collect system data from all collectors."""
+        # Collect CPU data
+        cpu_data = self.cpu_collector.collect()
+        self.current_data["cpu"] = cpu_data
+        self.cpu_history.append(cpu_data["usage_percent"])
+        
+        # Collect memory data
+        memory_data = self.memory_collector.collect()
+        self.current_data["memory"] = memory_data
+        self.memory_history.append((memory_data["used"], memory_data["total"]))
+        
+        # Collect disk data
+        disk_data = self.disk_collector.collect()
+        self.current_data["disk"] = disk_data
+        self.disk_io_history.append((disk_data["read_bytes"], disk_data["write_bytes"]))
+        
+        # Collect network data
+        network_data = self.network_collector.collect()
+        self.current_data["network"] = network_data
+        self.network_history.append((network_data["bytes_recv"], network_data["bytes_sent"]))
+        
+        # Collect process data
+        process_data = self.process_collector.collect()
+        self.current_data["processes"] = process_data
+        
+        # Process all collected data
+        self.current_data = self.data_processor.process(self.current_data)
+        
+        # Trim history data to configured length
+        max_history = self.config.display.graph_history
+        self.cpu_history = self.cpu_history[-max_history:]
+        self.memory_history = self.memory_history[-max_history:]
+        self.disk_io_history = self.disk_io_history[-max_history:]
+        self.network_history = self.network_history[-max_history:]
+
+    async def update_ui(self):
+        """Update UI components with current data."""
+        # Update header with system info
+        self.header.update(self.system_info)
+        
+        # Update graphs and meters
+        self.cpu_graph.update(self.cpu_history)
+        self.memory_meter.update(
+            self.current_data["memory"]["used_percent"],
+            f"{self.current_data['memory']['used_gb']:.1f}GB/{self.current_data['memory']['total_gb']:.1f}GB"
+        )
+        self.disk_meter.update(
+            self.current_data["disk"]["usage_percent"],
+            f"{self.current_data['disk']['used_gb']:.1f}GB/{self.current_data['disk']['total_gb']:.1f}GB"
+        )
+        
+        # Calculate network rates
+        if len(self.network_history) > 1:
+            last = self.network_history[-1]
+            prev = self.network_history[-2]
+            recv_rate = (last[0] - prev[0]) / self.config.general.update_interval
+            sent_rate = (last[1] - prev[1]) / self.config.general.update_interval
+            
+            # Convert to appropriate units
+            recv_unit, recv_rate = self._format_bytes_rate(recv_rate)
+            sent_unit, sent_rate = self._format_bytes_rate(sent_rate)
+            
+            network_data = [
+                last[0] - prev[0],  # Bytes received in last interval
+                last[1] - prev[1],  # Bytes sent in last interval
+            ]
+            self.network_graph.update(
+                network_data,
+                f"↓ {recv_rate:.1f}{recv_unit}/s  ↑ {sent_rate:.1f}{sent_unit}/s"
+            )
+        
+        # Update process table
+        self.process_table.update(self.current_data["processes"])
+        
+        # Update status bar
+        status = {
+            "time": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "update_interval": f"{self.config.general.update_interval}s",
+            "alerts": len(self._check_alerts()),
+        }
+        self.status_bar.update(status)
+        
+        # Render the dashboard
+        self.dashboard.render()
+
+    def _format_bytes_rate(self, bytes_per_sec: float) -> Tuple[str, float]:
+        """Format bytes per second into appropriate units."""
+        if bytes_per_sec < 1024:
+            return "B", bytes_per_sec
+        elif bytes_per_sec < 1024 * 1024:
+            return "KB", bytes_per_sec / 1024
+        elif bytes_per_sec < 1024 * 1024 * 1024:
+            return "MB", bytes_per_sec / (1024 * 1024)
+        else:
+            return "GB", bytes_per_sec / (1024 * 1024 * 1024)
+
+    def _check_alerts(self) -> List[str]:
+        """Check for system resource alerts based on configured thresholds."""
+        alerts = []
+        
+        # Check CPU usage
+        if self.current_data["cpu"]["usage_percent"] > self.config.alerts.cpu_threshold:
+            alerts.append(f"CPU usage is {self.current_data['cpu']['usage_percent']:.1f}% (threshold: {self.config.alerts.cpu_threshold}%)")
+        
+        # Check memory usage
+        if self.current_data["memory"]["used_percent"] > self.config.alerts.memory_threshold:
+            alerts.append(f"Memory usage is {self.current_data['memory']['used_percent']:.1f}% (threshold: {self.config.alerts.memory_threshold}%)")
+        
+        # Check disk usage
+        if self.current_data["disk"]["usage_percent"] > self.config.alerts.disk_threshold:
+            alerts.append(f"Disk usage is {self.current_data['disk']['usage_percent']:.1f}% (threshold: {self.config.alerts.disk_threshold}%)")
+        
+        return alerts
+
+    async def run(self):
+        """Run the main monitoring loop."""
+        try:
+            # Setup terminal
+            print(self.term.enter_fullscreen())
+            print(self.term.hidden_cursor())
+            
+            # Main update loop
+            while running:
+                start_time = time.time()
+                
+                # Collect and update data
+                await self.collect_data()
+                await self.update_ui()
+                
+                # Handle keyboard input
+                if self._check_input():
+                    break
+                
+                # Calculate sleep time to maintain update interval
+                elapsed = time.time() - start_time
+                sleep_time = max(0, self.config.general.update_interval - elapsed)
+                await asyncio.sleep(sleep_time)
+                
+        finally:
+            # Restore terminal
+            print(self.term.normal_cursor())
+            print(self.term.exit_fullscreen())
+
+    def _check_input(self) -> bool:
+        """Check for keyboard input and handle commands."""
+        if self.term.inkey(timeout=0):
+            key = self.term.inkey()
+            
+            # Check for quit command
+            if key.lower() == 'q':
+                return True
+                
+            # Help screen
+            elif key.lower() == 'h':
+                self._show_help()
+                
+            # Switch views
+            elif key in '1234':
+                view_index = int(key) - 1
+                self.dashboard.switch_view(view_index)
+                
+            # Sort processes
+            elif key.lower() == 'p':
+                self.process_table.sort_by('cpu')
+            elif key.lower() == 'm':
+                self.process_table.sort_by('memory')
+            elif key.lower() == 'd':
+                self.process_table.sort_by('disk')
+                
+            # Toggle color mode
+            elif key.lower() == 'c':
+                self.config.display.theme = 'light' if self.config.display.theme == 'dark' else 'dark'
+                self.dashboard.update_theme()
+                
+            # Reset statistics
+            elif key.lower() == 'r':
+                self._reset_statistics()
+                
+            # Take snapshot
+            elif key.lower() == 's':
+                self._take_snapshot()
+                
+            # Process navigation
+            elif key.name == 'KEY_UP':
+                self.process_table.scroll_up()
+            elif key.name == 'KEY_DOWN':
+                self.process_table.scroll_down()
+                
+        return False
+
+    def _show_help(self):
+        """Display help screen with keyboard commands."""
+        help_text = [
+            "KEYBOARD COMMANDS",
+            "",
+            "q       - Quit the application",
+            "h       - Show this help screen",
+            "1-4     - Switch between different views",
+            "↑/↓     - Navigate process list",
+            "p       - Sort processes by CPU usage",
+            "m       - Sort processes by memory usage",
+            "d       - Sort processes by disk I/O",
+            "s       - Take a snapshot of current stats",
+            "c       - Toggle color mode (dark/light)",
+            "r       - Reset statistics",
+            "",
+            "Press any key to continue...",
+        ]
+        
+        # Clear screen and show help
+        print(self.term.clear())
+        for i, line in enumerate(help_text):
+            y = self.term.height // 2 - len(help_text) // 2 + i
+            x = self.term.width // 2 - max(len(l) for l in help_text) // 2
+            print(self.term.move(y, x) + line)
+            
+        # Wait for keypress
+        self.term.inkey()
+
+    def _reset_statistics(self):
+        """Reset all historical data."""
+        self.cpu_history = []
+        self.memory_history = []
+        self.disk_io_history = []
+        self.network_history = []
+        
+        # Reset collectors' accumulated data
+        self.cpu_collector.reset()
+        self.memory_collector.reset()
+        self.disk_collector.reset()
+        self.network_collector.reset()
+        self.process_collector.reset()
+
+    def _take_snapshot(self):
+        """Save current system state to a file."""
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        filename = f"system_snapshot_{timestamp}.json"
+        
+        import json
+        import os
+        
+        # Create snapshot directory if it doesn't exist
+        snapshot_dir = os.path.expanduser("~/.local/share/linux-system-monitor/snapshots")
+        os.makedirs(snapshot_dir, exist_ok=True)
+        
+        # Prepare snapshot data
+        snapshot = {
+            "timestamp": timestamp,
+            "system_info": self.system_info,
+            "cpu": self.current_data["cpu"],
+            "memory": self.current_data["memory"],
+            "disk": self.current_data["disk"],
+            "network": self.current_data["network"],
+            "top_processes": self.current_data["processes"][:10],  # Save only top 10 processes
+        }
+        
+        # Save to file
+        filepath = os.path.join(snapshot_dir, filename)
+        with open(filepath, "w") as f:
+            json.dump(snapshot, f, indent=2)
+            
+        # Show confirmation message
+        message = f"Snapshot saved to {filepath}"
+        x = self.term.width // 2 - len(message) // 2
+        y = self.term.height - 2
+        print(self.term.move(y, x) + self.term.white_on_blue(message))
+        time.sleep(2)  # Show message for 2 seconds
+
+    def stop(self):
+        """Stop the monitor and clean up."""
+        global running
+        running = False
+        
+        # Save configuration
+        self.config.save()
+        
+        # Log shutdown
+        if self.config.general.enable_logging:
+            import logging
+            logging.info("System monitor shutting down")
+
+
+@app.command()
+def main(
+    interval: float = typer.Option(1.0, "--interval", "-i", help="Update interval in seconds"),
+    layout: str = typer.Option("detailed", "--layout", "-l", help="UI layout (detailed, compact, minimal)"),
+    theme: str = typer.Option("dark", "--theme", "-t", help="Color theme (dark, light)"),
+):
+    """
+    Run the Linux System Monitor.
+    
+    This tool provides real-time monitoring of CPU, memory, disk, and network usage
+    in a terminal interface.
+    """
+    global config, dashboard, running
+    
+    # Create and run the system monitor
+    monitor = SystemMonitor(update_interval=interval, layout=layout, theme=theme)
+    
+    try:
+        # Setup logging if enabled
+        if monitor.config.general.enable_logging:
+            import logging
+            import os
+            
+            log_dir = os.path.expanduser(monitor.config.general.log_path)
+            os.makedirs(log_dir, exist_ok=True)
+            
+            log_file = os.path.join(log_dir, "system_monitor.log")
+            logging.basicConfig(
+                filename=log_file,
+                level=logging.INFO,
+                format="%(asctime)s - %(levelname)s - %(message)s",
+            )
+            logging.info("System monitor starting")
+            
+        # Run the monitor
+        asyncio.run(monitor.run())
+    
+    except Exception as e:
+        # Log error
+        if monitor.config.general.enable_logging:
+            import logging
+            logging.error(f"Error in system monitor: {str(e)}", exc_info=True)
+        
+        # Print error and exit
+        print(term.exit_fullscreen())
+        print(term.normal_cursor())
+        print(f"Error: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    app()
