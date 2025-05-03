@@ -30,6 +30,28 @@ This repository includes:
 5. **Development Environment**: Configuration for Python, JavaScript, and Ruby development
 6. **Career Applications**: How these skills apply to software engineering and ML/finance roles
 
+## Essential Resources
+
+### Books
+- **The Linux Command Line** by William Shotts - Fundamental command line skills
+- **How Linux Works** by Brian Ward - Understanding Linux internals
+- **Unix and Linux System Administration Handbook** - Comprehensive reference
+
+### Online Documentation
+- [Arch Linux Wiki](https://wiki.archlinux.org/) - Definitive Linux documentation resource
+- [NixOS Manual](https://nixos.org/manual/nixos/stable/) - Official NixOS documentation
+- [Digital Ocean Community Tutorials](https://www.digitalocean.com/community/tutorials) - Practical guides for Linux concepts
+
+### Tools
+- [Explainshell](https://explainshell.com/) - Interactive explanation of shell commands
+- [tldr pages](https://tldr.sh/) - Simplified and community-driven man pages
+- [ShellCheck](https://www.shellcheck.net/) - Script analysis tool
+
+### Video Resources
+- [Linux Journey](https://linuxjourney.com/) - Interactive learning platform
+- [Luke Smith's YouTube channel](https://www.youtube.com/c/LukeSmithxyz) - Terminal-centric workflows
+- [LearnLinuxTV](https://www.youtube.com/c/LearnLinuxTV) - Practical Linux tutorials
+
 ## Learning Path Structure
 
 ### Phase 1: Foundations (Months 1-3)
