@@ -1,34 +1,140 @@
-# Linux Mastery Journey
+curriculum designed to systematically build expertise:
 
-A comprehensive, structured approach to mastering Arch Linux and NixOS for professional software development.
+### Phase 1: Foundations (Months 1-3)
+- **Month 1:** [Base System Installation and Core Concepts](/learning_guides/month-01-base-system.md)
+  - [Practical Exercises](/learning_guides/month-01-exercises.md)
+- **Month 2:** [System Configuration and Package Management](/learning_guides/month-02-system-config.md)
+- **Month 3:** [Desktop Environment and Workflow Setup](/learning_guides/month-03-desktop-setup.md)
 
-![Version](https://img.shields.io/badge/Version-1.0.0-green)
-![License](https://img.shields.io/badge/License-MIT-orange)
+### Phase 2: Development Environment (Months 4-6)
+- **Month 4:** [Terminal Tools and Shell Customization](/learning_guides/month-04-terminal-tools.md)
+- **Month 5:** [Programming Languages and Development Tools](/learning_guides/month-05-dev-tools.md)
+- **Month 6:** [Containerization and Virtual Environments](/learning_guides/month-06-containers.md)
 
-## Overview
+### Phase 3: System Administration (Months 7-9)
+- **Month 7:** [System Maintenance and Performance Tuning](/learning_guides/month-07-maintenance.md)
+- **Month 8:** [Networking and Security Fundamentals](/learning_guides/month-08-networking.md)
+- **Month 9:** [Automation and Scripting](/learning_guides/month-09-automation.md)
 
-This repository documents my journey transitioning from macOS to Linux (Arch and NixOS) as a professional software engineer. It serves as both personal documentation and a structured learning path for others interested in gaining deep Linux proficiency.
+### Phase 4: Advanced Applications (Months 10-12)
+- **Month 10:** [Cloud Integration and Remote Development](/learning_guides/month-10-cloud.md)
+- **Month 11:** [NixOS and Declarative Configuration](/learning_guides/month-11-nixos.md)
+- **Month 12:** [Career Portfolio and Advanced Projects](/learning_guides/month-12-portfolio.md)
 
-### Philosophy
+→ [Explore the Full Learning Curriculum](/learning_guides)
 
-This project is built on these core principles:
+## Development Environment
 
-- **Mastery Through Deliberate Practice**: Regular, focused practice of specific skills
-- **Progressive Skill Acquisition**: Learn fundamentals before moving to advanced concepts
-- **Deep Understanding Over Surface Knowledge**: Thoroughly understand each component of the system
-- **Career-Oriented Learning**: Focus on skills that provide a professional advantage
-- **Documentation as Learning**: Capture knowledge acquisition in real-time
+A key focus of this project is creating an efficient, powerful development environment for professional software engineering work:
 
-## System Architecture
+### Terminal Environment
 
-This repository includes:
+The terminal setup includes:
+- **Shell**: Zsh with Oh My Zsh
+- **Terminal Multiplexer**: Tmux for session management
+- **Editor**: Neovim configured as a full-featured IDE
+- **Version Control**: Git with enhanced workflow tools
 
-1. **Installation Guides**: Step-by-step instructions for Arch Linux and NixOS setup
-2. **Configuration Files**: My personal dotfiles and system configurations
-3. **Learning Path**: A structured, month-by-month curriculum for mastering Linux
-4. **Problem Solutions**: Documented solutions to challenges encountered
-5. **Development Environment**: Configuration for Python, JavaScript, and Ruby development
-6. **Career Applications**: How these skills apply to software engineering and ML/finance roles
+→ [Terminal Configuration Details](/learning_guides/month-04-terminal-tools.md)
+
+### Programming Languages
+
+Language-specific configurations include:
+- **Python**: [Development Environment](/configuration/development/languages/python/README.md)
+- **JavaScript**: Node.js, npm, and frontend tooling
+- **Ruby**: RVM, Bundler, and testing frameworks
+
+Each language environment is configured for:
+- Dependency management
+- Code quality (linting/formatting)
+- Testing frameworks
+- Debugging tools
+- Project scaffolding
+
+→ [Language Configuration Details](/configuration/development)
+
+### Container Development
+
+Docker and containerization setup:
+- Local development containers
+- Multi-service applications
+- Production environment parity
+- Kubernetes integration
+
+→ [Container Configuration Details](/learning_guides/month-06-containers.md)
+
+## Projects
+
+### System Monitor
+
+A terminal-based system monitoring tool that demonstrates:
+- Python development in a Linux environment
+- System resource data collection
+- Terminal UI development
+- Background processes and real-time updates
+
+Key features:
+- CPU, memory, disk, and network monitoring
+- Process management
+- Historical data visualization
+- Alerting and notifications
+
+→ [Explore the System Monitor Project](/projects/system-monitor)
+
+## Configuration Files
+
+### System Configuration
+
+Core system configuration files for:
+- Boot and system initialization
+- Package management
+- User management
+- Filesystem layout
+- Hardware configuration
+
+### Desktop Environment
+
+Desktop configuration for a minimal, keyboard-driven workflow:
+- Window manager (i3, Sway, or Hyprland)
+- Display server (X11 or Wayland)
+- Status bar and notifications
+- Application launchers
+- Theming and appearance
+
+### Development Environment
+
+Development tools configuration for:
+- Code editors and IDEs
+- Terminal applications
+- Version control systems
+- Build tools
+- Debugging tools
+
+→ [Explore All Configuration Files](/configuration)
+
+## Troubleshooting
+
+Comprehensive troubleshooting guides for common Linux issues:
+
+### Boot Issues
+- Bootloader problems
+- Kernel parameters
+- Initramfs configuration
+- Emergency recovery
+
+### Graphics Issues
+- [Driver installation and configuration](/troubleshooting/graphics.md)
+- Multi-monitor setup
+- GPU performance optimization
+- Wayland-specific troubleshooting
+
+### Networking Issues
+- [Network configuration](/troubleshooting/networking.md)
+- DNS and connectivity problems
+- VPN setup
+- Wireless troubleshooting
+
+→ [Explore All Troubleshooting Guides](/troubleshooting)
 
 ## Essential Resources
 
@@ -47,32 +153,20 @@ This repository includes:
 - [tldr pages](https://tldr.sh/) - Simplified and community-driven man pages
 - [ShellCheck](https://www.shellcheck.net/) - Script analysis tool
 
-### Video Resources
-- [Linux Journey](https://linuxjourney.com/) - Interactive learning platform
-- [Luke Smith's YouTube channel](https://www.youtube.com/c/LukeSmithxyz) - Terminal-centric workflows
-- [LearnLinuxTV](https://www.youtube.com/c/LearnLinuxTV) - Practical Linux tutorials
+### Community Resources
+- [Arch Linux Forums](https://bbs.archlinux.org/) - Community support and discussion
+- [NixOS Discourse](https://discourse.nixos.org/) - NixOS community forum
+- [r/archlinux](https://www.reddit.com/r/archlinux/) - Reddit Arch Linux community
+- [r/NixOS](https://www.reddit.com/r/NixOS/) - Reddit NixOS community
 
-## Learning Path Structure
+## Time Commitment
 
-### Phase 1: Foundations (Months 1-3)
-- **Month 1:** [Base System Installation and Core Concepts](learning_guides/month-01-base-system.md)
-- **Month 2:** [System Configuration and Package Management](learning_guides/month-02-system-config.md)
-- **Month 3:** [Desktop Environment and Workflow Setup](learning_guides/month-03-desktop-setup.md)
+This learning path is designed to be completed in 12 months with approximately 10-15 hours of study per week. The breakdown of time investment is:
 
-### Phase 2: Development Environment (Months 4-6)
-- **Month 4:** [Terminal Tools and Shell Customization](learning_guides/month-04-terminal-tools.md)
-- **Month 5:** [Programming Languages and Development Tools](learning_guides/month-05-dev-tools.md)
-- **Month 6:** [Containerization and Virtual Environments](learning_guides/month-06-containers.md)
-
-### Phase 3: System Administration (Months 7-9)
-- **Month 7:** [System Maintenance and Performance Tuning](learning_guides/month-07-maintenance.md)
-- **Month 8:** [Networking and Security Fundamentals](learning_guides/month-08-networking.md)
-- **Month 9:** [Automation and Scripting](learning_guides/month-09-automation.md)
-
-### Phase 4: Advanced Applications (Months 10-12)
-- **Month 10:** [Cloud Integration and Remote Development](learning_guides/month-10-cloud.md)
-- **Month 11:** [NixOS and Declarative Configuration](learning_guides/month-11-nixos.md)
-- **Month 12:** [Career Portfolio and Advanced Projects](learning_guides/month-12-portfolio.md)
+- **Initial Setup**: 3-7 days of focused work
+- **Adaptation Phase**: 2-4 weeks of regular use and customization
+- **Proficiency**: 3-6 months of continued learning and practice
+- **Mastery**: Ongoing development beyond the core curriculum
 
 ## Repository Organization
 
@@ -87,28 +181,30 @@ linux-mastery-journey/
 │   └── development/            # Development tools configuration
 ├── learning_guides/            # Structured learning curriculum
 │   ├── month-01-base-system.md # Month 1 guide
+│   ├── month-01-exercises.md   # Month 1 practical exercises
 │   └── ...                     # Additional monthly guides
 ├── troubleshooting/            # Solutions to common problems
-├── scripts/                    # Utility scripts and tools
-└── projects/                   # Example projects that demonstrate skills
+│   ├── graphics.md             # Graphics troubleshooting
+│   ├── networking.md           # Networking troubleshooting
+│   └── ...                     # Additional guides
+├── projects/                   # Example projects that demonstrate skills
+│   └── system-monitor/         # Terminal-based system monitoring tool
+└── README.md                   # This file
 ```
 
 ## Getting Started
 
 If you're following along with this journey, start here:
 
-1. Read the [installation guide](installation/arch/README.md) for detailed setup instructions
-2. Follow the [Month 1 Guide](learning_guides/month-01-base-system.md) to establish your foundation
+1. Choose your installation path:
+   - [Arch Linux Installation Guide](/installation/arch/README.md)
+   - [NixOS Installation Guide](/installation/nixos/README.md)
+
+2. Follow the [Month 1 Guide](/learning_guides/month-01-base-system.md) and [Month 1 Exercises](/learning_guides/month-01-exercises.md) to establish your foundation
+
 3. Progress through each monthly guide as your skills and confidence grow
 
-## Time Commitment
-
-This learning path is designed to be completed in 12 months with approximately 10-15 hours of study per week. The breakdown of time investment is:
-
-- **Initial Setup**: 3-7 days of focused work
-- **Adaptation Phase**: 2-4 weeks of regular use and customization
-- **Proficiency**: 3-6 months of continued learning and practice
-- **Mastery**: Ongoing development beyond the core curriculum
+4. Join the [learning community](#community-resources) to share your journey and get support
 
 ## Key Tools and Technologies
 
@@ -120,6 +216,23 @@ This learning path is designed to be completed in 12 months with approximately 1
 - **Development**: Python, JavaScript, Ruby environments
 - **Containers**: Docker, Podman
 - **System Management**: Systemd, Nix
+
+## Progress Tracking
+
+Track your Linux mastery journey with this checklist:
+
+- [ ] Complete Arch Linux installation
+- [ ] Set up development environment
+- [ ] Configure window manager and desktop
+- [ ] Master shell and terminal tools
+- [ ] Set up programming language environments
+- [ ] Configure containerization
+- [ ] Implement automated system maintenance
+- [ ] Configure networking and security
+- [ ] Create automation scripts
+- [ ] Integrate with cloud services
+- [ ] Set up NixOS with declarative configuration
+- [ ] Create professional portfolio of Linux skills
 
 ## Why This Approach
 
@@ -134,6 +247,8 @@ While this is primarily a personal learning journey, contributions are welcome:
 - File an issue for corrections or suggestions
 - Submit a PR for improvements to guides or scripts
 - Share your own experiences in discussions
+
+See the [CONTRIBUTING.md](/CONTRIBUTING.md) file for guidelines on how to contribute.
 
 ## Acknowledgements
 
@@ -152,7 +267,7 @@ This project is a work in progress and may contain bugs or incomplete features. 
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](/LICENSE) file for details.
 
 ---
 
