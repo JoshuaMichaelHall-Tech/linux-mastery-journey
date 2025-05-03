@@ -1428,6 +1428,19 @@ After completing the exercises and projects, reflect on these questions:
 
 8. How would you ensure consistency across multiple system configurations?
 
+## Answers to Self-Assessment Quiz
+
+1. `systemctl is-enabled service-name`
+2. `journalctl -u service-name -n 100`
+3. `/etc/fstab`
+4. `[custom-repo-name]` followed by `Server = repo-url`
+5. `nmcli connection add`
+6. `yay -Ss search-term` or `paru -Ss search-term`
+7. `PKGBUILD`
+8. `OnCalendar=*-*-* 03:00:00` in a timer unit
+9. `systemctl list-timers`
+10. `journalctl --vacuum-time=2weeks` or `journalctl --vacuum-size=1G`
+
 ## Next Steps
 
 After completing Month 2 exercises, consider these activities to further cement your learning:

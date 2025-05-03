@@ -4,6 +4,17 @@ This month focuses on transforming your base Arch Linux installation into a cust
 
 ## Time Commitment: ~10 hours/week for 4 weeks
 
+## Month 3 Learning Path
+
+```
+Week 1                 Week 2                 Week 3                 Week 4
+┌─────────────┐       ┌─────────────┐       ┌─────────────┐       ┌─────────────┐
+│  Window     │       │  Desktop    │       │   Visual    │       │  Workflow   │
+│  Manager    │──────▶│ Environment │──────▶│Customization│──────▶│Integration & │
+│  Basics     │       │    Setup    │       │  & Workflow │       │  Resources  │
+└─────────────┘       └─────────────┘       └─────────────┘       └─────────────┘
+```
+
 ## Learning Objectives
 
 By the end of this month, you should be able to:
@@ -46,6 +57,61 @@ By the end of this month, you should be able to:
    - Understand workspaces and layouts
    - Master basic navigation
    - Create and switch between window arrangements
+
+## Window Manager Comparison
+
+| Feature | i3 (X11) | Sway (Wayland) | Hyprland (Wayland) |
+|---------|----------|----------------|-------------------|
+| **Backend** | X11 | Wayland | Wayland |
+| **Animation Support** | Limited | Limited | Extensive |
+| **Resource Usage** | Very Low | Low | Moderate |
+| **Mature/Stable** | Very | Yes | Newer |
+| **Config Language** | Plain text | Plain text | C++-like syntax |
+| **Multi-monitor** | Good | Excellent | Excellent |
+| **HiDPI Support** | Limited | Native | Native |
+| **Touch Support** | Limited | Good | Excellent |
+| **GPU Acceleration** | Optional | Required | Required |
+| **Learning Curve** | Moderate | Moderate | Steeper |
+| **Best For** | Older hardware, stability | Modern hardware, compatibility | Animations, eye candy |
+
+## X11 vs Wayland: Key Differences
+
+| Feature | X11 | Wayland |
+|---------|-----|---------|
+| **Architecture** | Client-Server with X Server | Compositor-based |
+| **Age/Maturity** | 30+ years (legacy) | Newer (modern) |
+| **Security** | Less secure (keylogging possible) | More secure (isolated clients) |
+| **Screen Sharing** | Well-supported | Limited support |
+| **Remote Desktop** | Native support (X forwarding) | Requires additional protocols |
+| **Multi-monitor** | Can be problematic | Native support |
+| **HiDPI Support** | Limited (fractional scaling issues) | Native support |
+| **Graphics Performance** | More overhead | Direct rendering |
+| **Compatibility** | Excellent (most apps work) | Improving (some X11 apps need XWayland) |
+| **Touch/Tablet Support** | Limited | Native support |
+| **Screen Tearing** | Common issue | Largely eliminated |
+
+## Tiling Window Manager Concepts
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│                        WORKSPACE 1                           │
+│  ┌───────────────────┐             ┌───────────────────────┐ │
+│  │                   │             │                       │ │
+│  │                   │             │                       │ │
+│  │    Terminal       │             │    Browser            │ │
+│  │                   │             │                       │ │
+│  │                   │             │                       │ │
+│  └───────────────────┘             └───────────────────────┘ │
+│                                                              │
+│  ┌───────────────────┐             ┌───────────────────────┐ │
+│  │                   │             │                       │ │
+│  │                   │             │                       │ │
+│  │    Code Editor    │             │    File Manager       │ │
+│  │                   │             │                       │ │
+│  │                   │             │                       │ │
+│  └───────────────────┘             └───────────────────────┘ │
+└──────────────────────────────────────────────────────────────┘
+```
 
 ### Practical Exercises
 
@@ -169,251 +235,6 @@ exec --no-startup-id feh --bg-fill ~/Pictures/wallpaper.jpg
 exec --no-startup-id nm-applet
 ```
 
-#### Install and Configure Sway (Wayland)
-
-1. Install Sway and related packages:
-
-```bash
-sudo pacman -S sway swaylock swayidle waybar wofi wl-clipboard
-```
-
-2. Create the configuration directory:
-
-```bash
-mkdir -p ~/.config/sway
-cp /etc/sway/config ~/.config/sway/
-```
-
-3. Edit the Sway configuration:
-
-```bash
-nano ~/.config/sway/config
-```
-
-Add or modify these essential configurations:
-
-```
-# Set modifier key (Mod1=Alt, Mod4=Windows key)
-set $mod Mod4
-
-# Terminal emulator
-set $term alacritty
-
-# Application launcher
-set $menu wofi --show=drun
-
-# Output configuration (monitors)
-output * bg ~/Pictures/wallpaper.jpg fill
-
-# Example output configuration:
-# output HDMI-A-1 resolution 1920x1080 position 1920,0
-
-# Input configuration
-input type:touchpad {
-    tap enabled
-    natural_scroll enabled
-    middle_emulation enabled
-}
-
-input type:keyboard {
-    xkb_layout us
-    xkb_options caps:escape
-}
-
-# Key bindings
-bindsym $mod+Return exec $term
-bindsym $mod+Shift+q kill
-bindsym $mod+d exec $menu
-
-# Drag floating windows
-floating_modifier $mod normal
-
-# Reload configuration
-bindsym $mod+Shift+c reload
-
-# Exit sway
-bindsym $mod+Shift+e exec swaynag -t warning -m 'Exit sway?' -b 'Yes' 'swaymsg exit'
-
-# Moving around
-bindsym $mod+h focus left
-bindsym $mod+j focus down
-bindsym $mod+k focus up
-bindsym $mod+l focus right
-
-# Move focused window
-bindsym $mod+Shift+h move left
-bindsym $mod+Shift+j move down
-bindsym $mod+Shift+k move up
-bindsym $mod+Shift+l move right
-
-# Workspaces
-bindsym $mod+1 workspace number 1
-bindsym $mod+2 workspace number 2
-# ... (additional workspaces)
-
-# Move focused container to workspace
-bindsym $mod+Shift+1 move container to workspace number 1
-bindsym $mod+Shift+2 move container to workspace number 2
-# ... (additional workspaces)
-
-# Layout
-bindsym $mod+b splith
-bindsym $mod+v splitv
-bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
-bindsym $mod+e layout toggle split
-bindsym $mod+f fullscreen
-bindsym $mod+Shift+space floating toggle
-bindsym $mod+space focus mode_toggle
-bindsym $mod+a focus parent
-
-# Status Bar
-bar {
-    swaybar_command waybar
-}
-
-# Idle configuration
-exec swayidle -w \
-         timeout 300 'swaylock -f -c 000000' \
-         timeout 600 'swaymsg "output * dpms off"' resume 'swaymsg "output * dpms on"' \
-         before-sleep 'swaylock -f -c 000000'
-```
-
-4. Create a Waybar configuration:
-
-```bash
-mkdir -p ~/.config/waybar
-nano ~/.config/waybar/config
-```
-
-Add this basic configuration:
-
-```json
-{
-    "layer": "top",
-    "position": "top",
-    "height": 30,
-    "modules-left": ["sway/workspaces", "sway/mode"],
-    "modules-center": ["sway/window"],
-    "modules-right": ["pulseaudio", "network", "cpu", "memory", "battery", "clock", "tray"],
-    "sway/workspaces": {
-        "disable-scroll": true,
-        "all-outputs": true,
-        "format": "{name}"
-    },
-    "sway/mode": {
-        "format": "<span style=\"italic\">{}</span>"
-    },
-    "tray": {
-        "icon-size": 21,
-        "spacing": 10
-    },
-    "clock": {
-        "tooltip-format": "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>",
-        "format": "{:%Y-%m-%d %H:%M}"
-    },
-    "cpu": {
-        "format": "{usage}% CPU",
-        "tooltip": false
-    },
-    "memory": {
-        "format": "{}% MEM"
-    },
-    "battery": {
-        "states": {
-            "warning": 30,
-            "critical": 15
-        },
-        "format": "{capacity}% BAT",
-        "format-charging": "{capacity}% CHG",
-        "format-plugged": "{capacity}% PLG"
-    },
-    "network": {
-        "format-wifi": "{essid} ({signalStrength}%) ",
-        "format-ethernet": "{ipaddr}/{cidr} ",
-        "tooltip-format": "{ifname} via {gwaddr} ",
-        "format-linked": "{ifname} (No IP) ",
-        "format-disconnected": "Disconnected ⚠",
-        "format-alt": "{ifname}: {ipaddr}/{cidr}"
-    },
-    "pulseaudio": {
-        "format": "{volume}% VOL",
-        "format-muted": "MUTED",
-        "on-click": "pavucontrol"
-    }
-}
-```
-
-5. Create Waybar style:
-
-```bash
-nano ~/.config/waybar/style.css
-```
-
-Add a basic style:
-
-```css
-* {
-    border: none;
-    border-radius: 0;
-    font-family: "Source Code Pro", monospace;
-    font-size: 14px;
-    min-height: 0;
-}
-
-window#waybar {
-    background-color: rgba(43, 48, 59, 0.9);
-    color: #ffffff;
-    transition-property: background-color;
-    transition-duration: .5s;
-}
-
-#workspaces button {
-    padding: 0 5px;
-    background-color: transparent;
-    color: #ffffff;
-}
-
-#workspaces button:hover {
-    background: rgba(0, 0, 0, 0.2);
-}
-
-#workspaces button.focused {
-    background-color: #64727D;
-}
-
-#mode {
-    background-color: #64727D;
-    border-bottom: 3px solid #ffffff;
-}
-
-#clock,
-#battery,
-#cpu,
-#memory,
-#temperature,
-#network,
-#pulseaudio,
-#tray {
-    padding: 0 10px;
-    margin: 0 4px;
-}
-
-#battery.warning {
-    background-color: #ffbe6f;
-    color: black;
-}
-
-#battery.critical {
-    background-color: #f53c3c;
-    color: #ffffff;
-}
-
-#network.disconnected {
-    background-color: #f53c3c;
-}
-```
-
 ### Resources
 
 - [ArchWiki - Xorg](https://wiki.archlinux.org/title/Xorg)
@@ -461,6 +282,43 @@ window#waybar {
    - Configure notification system (dunst)
    - Add system monitoring tools
    - Set up screenshot and screen recording applications
+
+## Multi-Monitor Layout Example
+
+```
+┌────────────────────────┐     ┌────────────────────────┐
+│                        │     │                        │
+│                        │     │                        │
+│                        │     │                        │
+│     Primary Monitor    │     │    Secondary Monitor   │
+│     (eDP-1)            │     │    (HDMI-A-1)          │
+│     1920x1080          │     │    1920x1080           │
+│                        │     │                        │
+│                        │     │                        │
+└────────────────────────┘     └────────────────────────┘
+        Position 0,0                Position 1920,0
+```
+
+## Desktop Environment Components
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│                       Window Manager                         │
+└──────────────────────────────────────────────────────────────┘
+                              │
+          ┌──────────────────┼──────────────────┐
+          │                   │                  │
+┌─────────────────┐  ┌────────────────┐  ┌───────────────┐
+│  Status Bar     │  │  Notification  │  │  Compositor   │
+│  (i3bar/waybar) │  │  System (dunst)│  │  (picom/none) │
+└─────────────────┘  └────────────────┘  └───────────────┘
+          │                   │                  │
+          │                   │                  │
+┌─────────────────┐  ┌────────────────┐  ┌───────────────┐
+│ App Launcher    │  │   Terminal     │  │ File Manager  │
+│ (dmenu/rofi)    │  │   Emulator     │  │ (pcmanfm)     │
+└─────────────────┘  └────────────────┘  └───────────────┘
+```
 
 ### Practical Exercises
 
@@ -514,283 +372,6 @@ Xft.dpi: 144
 
 ```
 output eDP-1 scale 1.5
-```
-
-#### Input Device Configuration
-
-1. Configure keyboard layout in X11:
-
-```bash
-localectl set-x11-keymap us pc105 intl
-```
-
-2. For Sway, add to config:
-
-```
-input type:keyboard {
-    xkb_layout "us"
-    xkb_variant "intl"
-    xkb_options "caps:escape"
-}
-```
-
-3. Configure touchpad for X11:
-
-```bash
-sudo nano /etc/X11/xorg.conf.d/30-touchpad.conf
-```
-
-Add:
-```
-Section "InputClass"
-    Identifier "touchpad"
-    Driver "libinput"
-    MatchIsTouchpad "on"
-    Option "Tapping" "on"
-    Option "NaturalScrolling" "true"
-    Option "ClickMethod" "clickfinger"
-    Option "DisableWhileTyping" "true"
-EndSection
-```
-
-4. For Sway, add to config:
-
-```
-input type:touchpad {
-    tap enabled
-    natural_scroll enabled
-    dwt enabled
-    click_method clickfinger
-}
-```
-
-#### Audio Configuration
-
-1. Install audio packages:
-
-```bash
-sudo pacman -S pulseaudio pulseaudio-alsa pulsemixer pavucontrol
-# Or for PipeWire:
-sudo pacman -S pipewire pipewire-pulse wireplumber pavucontrol
-```
-
-2. Configure media keys in i3:
-
-```
-# Media keys
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5%
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle
-bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle
-bindsym XF86AudioPlay exec --no-startup-id playerctl play-pause
-bindsym XF86AudioNext exec --no-startup-id playerctl next
-bindsym XF86AudioPrev exec --no-startup-id playerctl previous
-```
-
-3. Set up default audio device:
-
-```bash
-nano ~/.config/pulse/default.pa
-```
-
-Add or modify:
-```
-set-default-sink alsa_output.pci-0000_00_1f.3.analog-stereo
-set-default-source alsa_input.pci-0000_00_1f.3.analog-stereo
-```
-
-#### Essential Desktop Applications
-
-1. Install a modern terminal emulator:
-
-```bash
-sudo pacman -S alacritty
-```
-
-2. Configure Alacritty:
-
-```bash
-mkdir -p ~/.config/alacritty
-nano ~/.config/alacritty/alacritty.yml
-```
-
-Add basic configuration:
-```yaml
-window:
-  padding:
-    x: 10
-    y: 10
-  decorations: full
-  opacity: 0.95
-
-scrolling:
-  history: 10000
-  multiplier: 3
-
-font:
-  normal:
-    family: "JetBrains Mono"
-    style: Regular
-  bold:
-    family: "JetBrains Mono"
-    style: Bold
-  italic:
-    family: "JetBrains Mono"
-    style: Italic
-  size: 12.0
-
-# Colors (Dracula)
-colors:
-  primary:
-    background: '#282a36'
-    foreground: '#f8f8f2'
-  cursor:
-    text: CellBackground
-    cursor: CellForeground
-  selection:
-    text: CellForeground
-    background: '#44475a'
-  normal:
-    black:   '#000000'
-    red:     '#ff5555'
-    green:   '#50fa7b'
-    yellow:  '#f1fa8c'
-    blue:    '#bd93f9'
-    magenta: '#ff79c6'
-    cyan:    '#8be9fd'
-    white:   '#bfbfbf'
-  bright:
-    black:   '#4d4d4d'
-    red:     '#ff6e67'
-    green:   '#5af78e'
-    yellow:  '#f4f99d'
-    blue:    '#caa9fa'
-    magenta: '#ff92d0'
-    cyan:    '#9aedfe'
-    white:   '#e6e6e6'
-```
-
-3. Install and configure a file manager:
-
-```bash
-sudo pacman -S pcmanfm
-```
-
-4. Install and configure a notification daemon:
-
-```bash
-sudo pacman -S dunst
-mkdir -p ~/.config/dunst
-cp /etc/dunst/dunstrc ~/.config/dunst/
-```
-
-5. Edit dunstrc:
-
-```bash
-nano ~/.config/dunst/dunstrc
-```
-
-Customize with:
-```ini
-[global]
-    monitor = 0
-    follow = mouse
-    width = 300
-    height = 300
-    origin = top-right
-    offset = 10x50
-    scale = 0
-    notification_limit = 20
-    progress_bar = true
-    indicate_hidden = yes
-    transparency = 20
-    separator_height = 2
-    padding = 8
-    horizontal_padding = 8
-    text_icon_padding = 0
-    frame_width = 2
-    frame_color = "#aaaaaa"
-    separator_color = frame
-    sort = yes
-    font = JetBrains Mono 10
-    line_height = 0
-    markup = full
-    format = "<b>%s</b>\n%b"
-    alignment = left
-    vertical_alignment = center
-    show_age_threshold = 60
-    ellipsize = middle
-    ignore_newline = no
-    stack_duplicates = true
-    hide_duplicate_count = false
-    show_indicators = yes
-    icon_position = left
-    min_icon_size = 0
-    max_icon_size = 32
-    sticky_history = yes
-    history_length = 20
-    browser = /usr/bin/firefox -new-tab
-    always_run_script = true
-    title = Dunst
-    class = Dunst
-
-[urgency_low]
-    background = "#222222"
-    foreground = "#888888"
-    timeout = 10
-
-[urgency_normal]
-    background = "#285577"
-    foreground = "#ffffff"
-    timeout = 10
-
-[urgency_critical]
-    background = "#900000"
-    foreground = "#ffffff"
-    frame_color = "#ff0000"
-    timeout = 0
-```
-
-6. Install and configure Rofi (modern application launcher):
-
-```bash
-sudo pacman -S rofi
-mkdir -p ~/.config/rofi
-nano ~/.config/rofi/config.rasi
-```
-
-Add configuration:
-```css
-configuration {
-    modi: "drun,run,window,ssh";
-    font: "JetBrains Mono 12";
-    show-icons: true;
-    icon-theme: "Papirus";
-    terminal: "alacritty";
-    drun-display-format: "{icon} {name}";
-    location: 0;
-    disable-history: false;
-    hide-scrollbar: true;
-    display-drun: "Applications";
-    display-run: "Commands";
-    display-window: "Windows";
-    display-ssh: "SSH";
-    sidebar-mode: true;
-}
-
-@theme "dracula"
-
-element {
-    padding: 8px;
-    spacing: 10px;
-}
-```
-
-7. Connect to i3 by updating config:
-
-```
-# Application launcher
-bindsym $mod+d exec --no-startup-id rofi -show drun
 ```
 
 ### Resources
@@ -1110,81 +691,6 @@ Make executable:
 chmod +x ~/scripts/weather.sh
 ```
 
-4. Add to i3blocks configuration for more customization:
-
-```bash
-sudo pacman -S i3blocks
-mkdir -p ~/.config/i3blocks
-nano ~/.config/i3blocks/config
-```
-
-Add:
-```
-# i3blocks config file
-
-# Global properties
-command=$SCRIPT_DIR/$BLOCK_NAME
-separator_block_width=15
-markup=none
-
-[weather]
-command=~/scripts/weather.sh
-interval=900
-color=#A4C2F4
-
-[cpu]
-label=CPU
-command=grep 'cpu ' /proc/stat | awk '{usage=($2+$4)*100/($2+$4+$5)} END {printf "%.1f%\n", usage}'
-interval=10
-color=#00FF00
-
-[memory]
-label=MEM
-command=free -h | awk '/^Mem:/ {print $3 "/" $2}'
-interval=30
-color=#FFFF00
-
-[disk]
-label=HOME
-command=df -h | awk '/\/$/ {print $4}'
-interval=30
-color=#FFA500
-
-[wifi]
-label=WiFi
-command=iwgetid -r || echo "disconnected"
-interval=10
-color=#00FFFF
-
-[battery]
-label=BAT
-command=acpi | cut -d " " -f4 | sed 's/,//g'
-interval=30
-color=#FF69B4
-
-[volume]
-label=VOL
-command=amixer get Master | grep -E -o '[0-9]{1,3}%' | head -1
-interval=1
-signal=10
-color=#F8F8F2
-
-[time]
-command=date '+%Y-%m-%d %H:%M:%S'
-interval=1
-color=#FFFFFF
-```
-
-5. Update i3 config to use i3blocks:
-
-```
-bar {
-    status_command i3blocks -c ~/.config/i3blocks/config
-    position top
-    # ... rest of bar configuration
-}
-```
-
 #### Workflow Optimization
 
 1. Create custom keybindings for applications:
@@ -1293,6 +799,32 @@ bindsym $mod+Shift+l exec ~/scripts/coding-layout.sh
    - Create session management scripts
    - Build task-specific automation
    - Develop notification integrations
+
+## Example Development Workflow
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│                         WORKFLOW                             │
+│                                                              │
+│  ┌───────────────┐       ┌───────────────┐                   │
+│  │ Workspace 1   │──────▶│ Workspace 2   │                   │
+│  │ (Terminal)    │       │ (Browser)     │                   │
+│  └───────────────┘       └───────────────┘                   │
+│          │                       │                           │
+│          │                       │                           │
+│          ▼                       ▼                           │
+│  ┌───────────────┐       ┌───────────────┐                   │
+│  │ Workspace 3   │◀─────▶│ Workspace 4   │                   │
+│  │ (Code Editor) │       │ (Reference)   │                   │
+│  └───────────────┘       └───────────────┘                   │
+│                                                              │
+└──────────────────────────────────────────────────────────────┘
+
+Example keybindings for navigation:
+- Mod+1/2/3/4: Switch to workspace
+- Mod+Shift+1/2/3/4: Move window to workspace
+- Alt+Tab: Jump to last workspace
+```
 
 ### Practical Exercises
 
@@ -1513,126 +1045,6 @@ Make executable:
 chmod +x ~/dotfiles/setup.sh
 ```
 
-#### Automation Scripts
-
-1. Create a workspace setup script:
-
-```bash
-nano ~/scripts/work-session.sh
-```
-
-Add:
-```bash
-#!/bin/bash
-# Set up a complete work environment
-
-# Move to workspace 1 (terminal)
-i3-msg workspace 1
-i3-msg exec alacritty
-
-# Move to workspace 2 (browser)
-i3-msg workspace 2
-i3-msg exec firefox
-
-# Move to workspace 3 (code)
-i3-msg workspace 3
-i3-msg exec code
-
-# Move to workspace 4 (communication)
-i3-msg workspace 4
-i3-msg exec "thunderbird"
-sleep 3
-i3-msg exec "signal-desktop"
-
-# Back to workspace 1
-i3-msg workspace 1
-
-# Notification
-notify-send "Work Session" "Environment has been set up"
-```
-
-Make executable:
-```bash
-chmod +x ~/scripts/work-session.sh
-```
-
-2. Create a display management script:
-
-```bash
-nano ~/scripts/display-manager.sh
-```
-
-Add:
-```bash
-#!/bin/bash
-# Display management script
-
-EXTERNAL_MONITOR="HDMI-1"
-
-function connect_display() {
-    xrandr --output eDP-1 --primary --mode 1920x1080 --pos 0x0 --rotate normal \
-           --output $EXTERNAL_MONITOR --mode 1920x1080 --pos 1920x0 --rotate normal
-    # Move workspace 2 and 3 to external monitor
-    i3-msg "workspace 2; move workspace to output $EXTERNAL_MONITOR"
-    i3-msg "workspace 3; move workspace to output $EXTERNAL_MONITOR"
-}
-
-function disconnect_display() {
-    # Move all workspaces back to primary
-    for i in {1..9}; do
-        i3-msg "workspace $i; move workspace to output eDP-1"
-    done
-    xrandr --output eDP-1 --primary --mode 1920x1080 --pos 0x0 --rotate normal \
-           --output $EXTERNAL_MONITOR --off
-}
-
-function mirror_display() {
-    xrandr --output eDP-1 --primary --mode 1920x1080 --pos 0x0 --rotate normal \
-           --output $EXTERNAL_MONITOR --mode 1920x1080 --same-as eDP-1
-}
-
-case "$1" in
-    connect)
-        connect_display
-        ;;
-    disconnect)
-        disconnect_display
-        ;;
-    mirror)
-        mirror_display
-        ;;
-    auto)
-        # Check if external monitor is connected
-        if xrandr | grep "$EXTERNAL_MONITOR connected"; then
-            connect_display
-        else
-            disconnect_display
-        fi
-        ;;
-    *)
-        echo "Usage: $0 {connect|disconnect|mirror|auto}"
-        exit 1
-esac
-
-notify-send "Display Manager" "Display configuration applied"
-```
-
-Make executable:
-```bash
-chmod +x ~/scripts/display-manager.sh
-```
-
-Add to i3 config for automatic execution:
-```
-# Auto-detect displays on startup
-exec --no-startup-id ~/scripts/display-manager.sh auto
-
-# Display management keybindings
-bindsym $mod+Shift+d exec --no-startup-id ~/scripts/display-manager.sh connect
-bindsym $mod+Shift+a exec --no-startup-id ~/scripts/display-manager.sh disconnect
-bindsym $mod+Shift+m exec --no-startup-id ~/scripts/display-manager.sh mirror
-```
-
 ### Resources
 
 - [ArchWiki - Default Applications](https://wiki.archlinux.org/title/Default_applications)
@@ -1646,33 +1058,120 @@ bindsym $mod+Shift+m exec --no-startup-id ~/scripts/display-manager.sh mirror
 
 ## Projects and Exercises
 
-1. **Custom Desktop Environment**
+1. **Custom Desktop Environment** [Intermediate] (8-10 hours)
    - Create a fully customized desktop environment
    - Implement consistent theming across applications
    - Configure efficient workflows with keybindings
    - Document your complete configuration
    - Create a demonstration video or screenshots
 
-2. **Dotfiles Repository**
+2. **Dotfiles Repository** [Beginner-Intermediate] (4-6 hours)
    - Create a Git repository for your configuration files
    - Implement a structure that works across systems
    - Add installation/bootstrap scripts
    - Document the purpose of each configuration file
    - Make it easy to deploy on a new system
 
-3. **Status Bar Enhancement**
+3. **Status Bar Enhancement** [Intermediate] (6-8 hours)
    - Create custom status bar modules for relevant information
    - Implement interactive elements (clickable areas)
    - Add weather, system stats, or other useful information
    - Ensure consistent styling with your desktop theme
    - Create a unique and functional status bar layout
 
-4. **Workflow Automation Project**
+4. **Workflow Automation Project** [Advanced] (10-12 hours)
    - Create scripts to automate common development tasks
    - Integrate with your window manager keybindings
    - Include project switching, terminal setup, etc.
    - Document usage and implementation
    - Build task-oriented workspace configurations
+
+## Specialized Workflow Examples
+
+### Programming Workflow
+- **Workspace 1**: Terminal with version control
+- **Workspace 2**: Code editor(s)
+- **Workspace 3**: Documentation/references in browser
+- **Workspace 4**: Application testing/preview
+
+### System Administration Workflow
+- **Workspace 1**: Multiple SSH terminals to servers
+- **Workspace 2**: Monitoring dashboard
+- **Workspace 3**: Documentation/wiki
+- **Workspace 4**: Email/communication
+
+### Content Creation Workflow
+- **Workspace 1**: Media editing application
+- **Workspace 2**: File browser for assets
+- **Workspace 3**: Reference materials
+- **Workspace 4**: Preview/rendering
+
+## Essential Window Manager Shortcuts (i3/Sway)
+
+| Action | Keybinding |
+|--------|------------|
+| Open terminal | Mod+Enter |
+| Kill window | Mod+Shift+q |
+| Open application launcher | Mod+d |
+| Change focus | Mod+h/j/k/l |
+| Move windows | Mod+Shift+h/j/k/l |
+| Enter fullscreen | Mod+f |
+| Toggle floating mode | Mod+Shift+space |
+| Switch to workspace 1-10 | Mod+1 through Mod+0 |
+| Move window to workspace 1-10 | Mod+Shift+1 through Mod+Shift+0 |
+| Split horizontally | Mod+b |
+| Split vertically | Mod+v |
+| Stacking layout | Mod+s |
+| Tabbed layout | Mod+w |
+| Toggle split layout | Mod+e |
+| Reload configuration | Mod+Shift+c |
+| Restart window manager | Mod+Shift+r |
+| Exit window manager | Mod+Shift+e |
+
+## Real-World Applications
+
+The skills you're learning in this month have direct applications in:
+
+- **Professional Development Environments**: Many software engineers use tiling window managers to maximize productivity and screen space utilization
+- **System Administration**: Efficient terminal-driven workflows are invaluable for managing multiple servers
+- **Resource-Constrained Systems**: Lightweight window managers extend the useful life of older hardware
+- **Specialized Workstations**: Custom environments can be optimized for specific tasks like video editing, programming, or data analysis
+
+By mastering these skills, you're building capabilities that translate directly to roles in:
+- Software Development (especially Linux-focused roles)
+- DevOps and SRE positions
+- System Administration
+- Technical Support Engineering
+
+## Self-Assessment Quiz
+
+Test your knowledge of the concepts covered in Month 3:
+
+1. What is the difference between a tiling window manager and a floating window manager?
+2. What are the main differences between X11 and Wayland display servers?
+3. How would you configure a window manager to automatically assign certain applications to specific workspaces?
+4. What command would you use to take a screenshot of a region in i3?
+5. How do you configure automatic application startup in a window manager?
+6. What is a compositor and what benefits does it provide?
+7. How would you set up a multi-monitor configuration in Sway?
+8. What is the purpose of a status bar in a desktop environment?
+9. How would you create a keyboard shortcut for launching a specific application?
+10. What tools would you use to customize GTK and Qt applications to maintain a consistent theme?
+
+## Connections to Your Learning Journey
+
+- **Previous Month**: The system configuration skills from Month 2 provide the foundation for many desktop environment configurations, especially systemd services for startup applications and network configurations for connectivity
+- **Next Month**: The terminal customization in Month 4 will integrate perfectly with your desktop environment, creating a cohesive system
+- **Future Applications**: 
+  - The theme configurations will be useful for development tools in Month 5
+  - The workspace management concepts will apply to containerization in Month 6
+  - The automation scripts will be expanded in Month 9
+
+Skills from this month that will be particularly important later:
+1. Keyboard-driven workflow (for terminal efficiency)
+2. Configuration file management (for development tools)
+3. System integration (for containerization)
+4. Scripting for automation (for system maintenance)
 
 ## Cross-References
 

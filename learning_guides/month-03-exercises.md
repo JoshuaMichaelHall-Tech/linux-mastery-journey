@@ -1217,21 +1217,18 @@ This document contains practical exercises and projects to accompany the Month 3
    ```ini
    [Default Applications]
    application/pdf=org.pwmt.zathura.desktop
-   application/x-extension-html=firefox.desktop
-   application/xhtml+xml=firefox.desktop
    image/jpeg=feh.desktop
    image/png=feh.desktop
-   image/svg+xml=inkscape.desktop
-   text/html=firefox.desktop
+   image/gif=mpv.desktop
    text/plain=nvim.desktop
-   video/mp4=mpv.desktop
-   video/x-matroska=mpv.desktop
+   text/html=firefox.desktop
    x-scheme-handler/http=firefox.desktop
    x-scheme-handler/https=firefox.desktop
    x-scheme-handler/mailto=thunderbird.desktop
+   inode/directory=pcmanfm.desktop
    ```
 
-2. **Configure clipboard manager**:
+2. **Install and configure a clipboard manager**:
 
    ```bash
    # Install clipboard manager
@@ -2197,9 +2194,31 @@ After completing the exercises and projects, reflect on these questions:
 
 8. What additional tools or scripts would further enhance your desktop environment?
 
+## Answers to Self-Assessment Quiz
+
+1. A tiling window manager automatically arranges windows in a non-overlapping pattern, while a floating window manager allows windows to overlap freely like in traditional desktop environments.
+
+2. X11 is older with better compatibility but poorer security and performance, while Wayland is newer with improved security, better HiDPI support, and smoother graphics but has some compatibility issues.
+
+3. Use the `assign` directive in the window manager config, e.g., `assign [class="Firefox"] 2` to assign Firefox to workspace 2.
+
+4. `flameshot gui` or configured key binding like `bindsym Print exec flameshot gui`.
+
+5. Add `exec` or `exec --no-startup-id` commands to the window manager config file.
+
+6. A compositor manages visual effects like transparency and animations, reducing screen tearing and improving visual appearance.
+
+7. Add output configuration to Sway config: `output HDMI-A-1 resolution 1920x1080 position 1920,0`.
+
+8. It displays system information, workspace status, and notifications, providing feedback about the system state.
+
+9. Add a keybinding to window manager config: `bindsym $mod+b exec firefox`.
+
+10. Use lxappearance for GTK and qt5ct for Qt applications to maintain consistent themes across both toolkits.
+
 ## Next Steps
 
-After completing Month 3 exercises, consider these activities to further enhance your skills:
+After completing the Month 3 exercises, consider these activities to further enhance your skills:
 
 1. **Learn advanced window manager features** like scratchpads, marks, and custom layouts
 
