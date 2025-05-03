@@ -1,59 +1,110 @@
 # Month 5: Programming Languages and Development Tools
 
-This month focuses on setting up professional development environments for programming languages (Python, JavaScript, and Ruby) and configuring Neovim as a powerful, customized IDE. You'll create language-specific workflows optimized for Linux.
+This month focuses on setting up professional development environments for programming languages (Python, JavaScript, and Ruby) and configuring Neovim as a powerful, customized IDE. You'll create language-specific workflows optimized for Linux and establish a consistent development experience across different programming projects.
 
 ## Time Commitment: ~10 hours/week for 4 weeks
+
+## Month 5 Learning Path
+
+```
+Week 1                 Week 2                 Week 3                 Week 4
+┌─────────────┐       ┌─────────────┐       ┌─────────────┐       ┌─────────────┐
+│  Neovim     │       │  Python     │       │  JavaScript │       │  Version    │
+│  IDE        │──────▶│  Development│──────▶│  TypeScript │──────▶│  Control &  │
+│  Setup      │       │  Environment│       │  Tooling    │       │  Workflow   │
+└─────────────┘       └─────────────┘       └─────────────┘       └─────────────┘
+```
 
 ## Learning Objectives
 
 By the end of this month, you should be able to:
 
-1. Configure Neovim as a full-featured development environment
-2. Set up language-specific development tools and workflows
-3. Implement language servers, debugging, and testing frameworks
-4. Understand version control workflows with Git
-5. Set up efficient project navigation and code search
-6. Create a consistent development experience across projects
+1. Configure Neovim as a full-featured development environment with LSP support and plugins
+2. Implement language-specific syntax highlighting, code completion, and linting
+3. Set up language servers for comprehensive code intelligence and diagnostics
+4. Configure debugging protocols and tools for multiple programming languages
+5. Manage different Python versions and virtual environments efficiently 
+6. Create Node.js/JavaScript development workflows with proper version management
+7. Establish consistent code formatting and quality standards across projects
+8. Set up automated testing frameworks for different programming languages
+9. Implement advanced Git workflows with IDE integration
+10. Design project-specific configurations that enhance productivity
 
 ## Week 1: Neovim Configuration for Development
 
 ### Core Learning Activities
 
 1. **Neovim Fundamentals** (2 hours)
-   - Understand Neovim's architecture
-   - Learn about Lua configuration
-   - Set up basic editing preferences
-   - Configure essential keybindings
-   - Study Neovim's plugin architecture
-   - Understand the differences between Vim and Neovim
-   - Learn about Neovim's lua API
+   - Understand Neovim's architecture and plugin ecosystem
+   - Learn Lua configuration basics and module structure
+   - Configure core editor preferences (line numbers, indentation, etc.)
+   - Set up custom keybindings and leader key mappings
+   - Learn modal editing efficiency techniques
+   - Understand Neovim's extensibility model
+   - Master buffer, window, and tab management
 
 2. **Plugin Management** (2 hours)
-   - Set up a plugin manager (packer.nvim, lazy.nvim)
-   - Understand plugin dependencies
-   - Install and configure core plugins
-   - Learn to troubleshoot plugin issues
-   - Study lazy-loading techniques
-   - Configure plugin auto-installation
-   - Learn to update and maintain plugins
+   - Set up a plugin manager (packer.nvim or lazy.nvim)
+   - Configure plugin dependencies and versioning
+   - Implement lazy-loading for performance optimization
+   - Install and configure UI enhancements (themes, statusline)
+   - Set up file browsing and navigation plugins
+   - Configure code editing helpers (autopairs, comments)
+   - Learn plugin troubleshooting techniques
 
 3. **LSP Configuration** (3 hours)
-   - Set up nvim-lspconfig
-   - Configure language servers
-   - Implement code completion with nvim-cmp
-   - Set up linting and formatting
-   - Configure diagnostics display
-   - Learn about LSP capabilities and limitations
-   - Implement signature help and hover documentation
+   - Set up nvim-lspconfig for Language Server Protocol support
+   - Configure code completion with nvim-cmp and sources
+   - Implement diagnostics display and navigation
+   - Configure formatting and code actions
+   - Set up signature help and hover documentation
+   - Learn LSP configuration per filetype
+   - Implement symbol navigation and references
 
 4. **Navigation and Search** (3 hours)
-   - Configure telescope.nvim for fuzzy finding
+   - Configure fuzzy finding with telescope.nvim
    - Set up file browsing with nvim-tree or similar
-   - Implement symbol and reference navigation
-   - Configure buffer and tab management
-   - Set up efficient code navigation keybindings
+   - Implement symbol search and definition jumping
+   - Configure live grep for codebase searching
+   - Set up buffer and tab management
    - Implement workspace symbol search
-   - Configure search results preview
+   - Configure project-wide navigation
+
+### Neovim Architecture and Workflow
+
+```
+┌───────────────────────────────────────────────┐
+│                 Neovim Core                   │
+├───────────────┬───────────────┬───────────────┤
+│  UI Layer     │  Editor Core  │  Plugin API   │
+│  - Rendering  │  - Buffers    │  - Lua API    │
+│  - Input      │  - Windows    │  - Remote API │
+│  - Statusline │  - Tabs       │  - Vim Script │
+└───────┬───────┴───────┬───────┴───────┬───────┘
+        │               │               │
+┌───────▼───────┐ ┌─────▼─────┐ ┌───────▼───────┐
+│  Language     │ │  File     │ │  Development  │
+│  Servers      │ │  Browsing │ │  Tools        │
+│  - Completion │ │  - Tree   │ │  - Git        │
+│  - Diagnostics│ │  - Grep   │ │  - Debugging  │
+│  - Formatting │ │  - Search │ │  - Terminal   │
+└───────────────┘ └───────────┘ └───────────────┘
+```
+
+### Editor Features Comparison
+
+| Feature            | Vim                      | Neovim                   | VSCode                   |
+|--------------------|--------------------------|--------------------------|--------------------------|
+| Language Server    | Limited, plugin-based    | Native LSP support       | Native LSP support       |
+| Plugin Language    | VimScript               | Lua + VimScript          | JavaScript + TypeScript  |
+| Multi-threading    | No                       | Yes                      | Yes                      |
+| Terminal           | Basic                    | Integrated, async        | Integrated               |
+| Git Integration    | Via plugins              | Via plugins              | Native + extensions      |
+| Remote Editing     | SSH, plugin-based        | SSH, plugin-based        | Remote extensions        |
+| Configuration      | Text-based               | Text-based, modular      | UI + JSON                |
+| Performance        | Fast                     | Very fast                | Moderate                 |
+| Memory Usage       | Low                      | Low                      | High                     |
+| Extensibility      | Good                     | Excellent                | Excellent                |
 
 ### Practical Exercises
 
@@ -62,6 +113,7 @@ By the end of this month, you should be able to:
 1. Install Neovim:
 
 ```bash
+# For Arch Linux
 sudo pacman -S neovim python-pynvim
 ```
 
@@ -74,11 +126,6 @@ touch ~/.config/nvim/init.lua
 
 3. Create a minimal init.lua:
 
-```bash
-nano ~/.config/nvim/init.lua
-```
-
-Add content:
 ```lua
 -- Basic settings
 vim.opt.number = true               -- Show line numbers
@@ -531,123 +578,6 @@ sudo pacman -S luarocks
 luarocks install --server=https://luarocks.org/dev luaformatter
 ```
 
-4. Configure git integration:
-
-```bash
-nano ~/.config/nvim/after/plugin/gitsigns.lua
-```
-
-Add content:
-```lua
--- Gitsigns setup
-local status_ok, gitsigns = pcall(require, "gitsigns")
-if not status_ok then
-    return
-end
-
-gitsigns.setup {
-    signs = {
-        add = { text = "+" },
-        change = { text = "~" },
-        delete = { text = "_" },
-        topdelete = { text = "‾" },
-        changedelete = { text = "~" },
-    },
-    signcolumn = true,
-    numhl = false,
-    linehl = false,
-    word_diff = false,
-    watch_gitdir = {
-        interval = 1000,
-        follow_files = true,
-    },
-    attach_to_untracked = true,
-    current_line_blame = true,
-    current_line_blame_opts = {
-        virt_text = true,
-        virt_text_pos = "eol",
-        delay = 1000,
-    },
-    sign_priority = 6,
-    update_debounce = 100,
-    status_formatter = nil,
-    preview_config = {
-        border = "single",
-        style = "minimal",
-        relative = "cursor",
-        row = 0,
-        col = 1,
-    },
-}
-
--- Keymaps
-vim.keymap.set('n', '<leader>gb', ':Gitsigns blame_line<CR>', { noremap = true, silent = true, desc = 'Git blame line' })
-vim.keymap.set('n', '<leader>gd', ':Gitsigns diffthis<CR>', { noremap = true, silent = true, desc = 'Git diff' })
-vim.keymap.set('n', '<leader>gp', ':Gitsigns preview_hunk<CR>', { noremap = true, silent = true, desc = 'Git preview hunk' })
-vim.keymap.set('n', '<leader>gr', ':Gitsigns reset_hunk<CR>', { noremap = true, silent = true, desc = 'Git reset hunk' })
-vim.keymap.set('n', ']g', ':Gitsigns next_hunk<CR>', { noremap = true, silent = true, desc = 'Next git hunk' })
-vim.keymap.set('n', '[g', ':Gitsigns prev_hunk<CR>', { noremap = true, silent = true, desc = 'Previous git hunk' })
-```
-
-5. Configure Which Key:
-
-```bash
-nano ~/.config/nvim/after/plugin/whichkey.lua
-```
-
-Add content:
-```lua
--- Which Key setup
-local status_ok, which_key = pcall(require, "which-key")
-if not status_ok then
-    return
-end
-
-which_key.setup {
-    plugins = {
-        marks = true,
-        registers = true,
-        spelling = {
-            enabled = false,
-            suggestions = 20,
-        },
-        presets = {
-            operators = true,
-            motions = true,
-            text_objects = true,
-            windows = true,
-            nav = true,
-            z = true,
-            g = true,
-        },
-    },
-    window = {
-        border = "single",
-        position = "bottom",
-        margin = { 1, 0, 1, 0 },
-        padding = { 1, 1, 1, 1 },
-    },
-    layout = {
-        height = { min = 4, max = 25 },
-        width = { min = 20, max = 50 },
-        spacing = 3,
-        align = "center",
-    },
-    ignore_missing = false,
-    hidden = { "<silent>", "<cmd>", "<Cmd>", "<CR>", "call", "lua", "^:", "^ " },
-    show_help = true,
-    triggers = "auto",
-}
-
--- Register key groups
-which_key.register({
-    ["<leader>f"] = { name = "Find" },
-    ["<leader>g"] = { name = "Git" },
-    ["<leader>l"] = { name = "LSP" },
-    ["<leader>w"] = { name = "Workspace" },
-})
-```
-
 ### Resources
 
 - [Neovim Documentation](https://neovim.io/doc/)
@@ -664,39 +594,92 @@ which_key.register({
 
 1. **Python Installation and Management** (2 hours)
    - Set up pyenv for multiple Python versions
-   - Configure virtual environments
-   - Understand Python packaging
-   - Install development tools (pip, poetry)
-   - Learn about Python module paths
-   - Configure Python environment variables
-   - Set up Python version switching
+   - Configure virtual environments with venv and virtualenv
+   - Understand Python package management
+   - Install development tools (pip, poetry, pipenv)
+   - Configure Python path and environment variables
+   - Learn Python version management best practices
+   - Implement Python module organization
 
 2. **Python Language Server Configuration** (2 hours)
    - Set up pyright or python-lsp-server
-   - Configure completion and type checking
-   - Implement docstring support
-   - Set up import sorting and formatting
-   - Configure linting tools (pylint, flake8)
-   - Set up static type checking with mypy
-   - Implement autoformatting with black
+   - Configure type checking and completion
+   - Implement docstring generation and templates
+   - Set up import sorting with isort
+   - Configure code formatting with black or yapf
+   - Implement static type checking with mypy
+   - Learn diagnostic navigation and fixing
 
 3. **Testing and Debugging** (3 hours)
-   - Configure pytest integration
+   - Configure pytest integration and discovery
    - Set up debugging with nvim-dap
-   - Learn to use breakpoints effectively
-   - Set up test running from Neovim
-   - Configure code coverage tools
-   - Implement test discovery and navigation
-   - Set up mocking and fixtures
+   - Learn to use breakpoints and variable inspection
+   - Implement test running from within Neovim
+   - Configure code coverage visualization
+   - Set up mocking and fixture management
+   - Learn TDD workflow in Python
 
 4. **Python Project Structure** (3 hours)
-   - Learn best practices for Python projects
-   - Set up project templates
-   - Configure dependency management
-   - Implement documentation tools
-   - Configure packaging and distribution
-   - Set up CI/CD for Python projects
-   - Implement virtual environments for isolation
+   - Implement Python project templates
+   - Configure dependency management with Poetry
+   - Set up documentation with Sphinx
+   - Implement packaging and distribution
+   - Configure CI/CD for Python projects
+   - Learn Python module design patterns
+   - Set up Python code quality tooling
+
+### Python Development Workflow
+
+```
+┌──────────────────────────────────────────────┐
+│            Python Development Flow           │
+│                                              │
+│  ┌──────────┐       ┌──────────┐             │
+│  │ pyenv    │──────▶│ poetry   │             │
+│  │ Version  │       │ Project  │             │
+│  │ Control  │       │ Setup    │             │
+│  └──────────┘       └────┬─────┘             │
+│                          │                   │
+│                          ▼                   │
+│  ┌──────────┐       ┌──────────┐             │
+│  │ pytest   │◀──────│ Code     │             │
+│  │ Testing  │       │ Writing  │             │
+│  │          │       │          │             │
+│  └────┬─────┘       └────┬─────┘             │
+│       │                  │                   │
+│       │                  ▼                   │
+│       │             ┌──────────┐             │
+│       └────────────▶│ black/   │             │
+│                     │ mypy     │             │
+│                     │ Checks   │             │
+│                     └────┬─────┘             │
+│                          │                   │
+│                          ▼                   │
+│                     ┌──────────┐             │
+│                     │ Git      │             │
+│                     │ Commit   │             │
+│                     │          │             │
+│                     └──────────┘             │
+└──────────────────────────────────────────────┘
+```
+
+### Python Tools Comparison
+
+| Tool           | Purpose                   | Advantages                      | Disadvantages                   |
+|----------------|---------------------------|--------------------------------|--------------------------------|
+| pyenv          | Python version management | Multiple versions side-by-side  | Initial setup complexity       |
+| venv           | Virtual environments      | Built into Python 3.3+         | Basic feature set              |
+| poetry         | Dependency management     | Modern, lock files, publishing  | Learning curve                 |
+| pipenv         | Dependency management     | Lock files, .env support        | Slower than alternatives       |
+| pip            | Package installation      | Standard, universal             | No lock file, dependency hell  |
+| black          | Code formatting           | Zero config, deterministic      | Non-customizable style         |
+| isort          | Import sorting            | Customizable, integrates w/IDE  | Limited to import sorting only |
+| pylint         | Linting                   | Comprehensive checks            | Can be overly strict, verbose  |
+| flake8         | Linting                   | Lightweight, configurable       | Less comprehensive than pylint |
+| mypy           | Static type checking      | Gradual typing support          | Requires type annotations      |
+| pytest         | Testing                   | Powerful, simple API            | Different from unittest        |
+| python-lsp     | Language server           | Standard protocol               | Less features than pyright     |
+| pyright        | Language server           | Type checking, fast             | Microsoft-specific             |
 
 ### Practical Exercises
 
@@ -861,7 +844,7 @@ Add to the existing file:
 [tool.black]
 line-length = 88
 target-version = ["py310"]
-include = '\.pyi?
+include = '\.pyi?$'
 
 [tool.isort]
 profile = "black"
@@ -1097,38 +1080,91 @@ nvim --headless -c 'autocmd User PackerComplete quitall' -c 'PackerSync'
 1. **Node.js and JavaScript Setup** (2 hours)
    - Configure nvm for Node.js version management
    - Set up npm/yarn/pnpm configuration
-   - Install essential development tools
-   - Configure .npmrc for Linux
-   - Set up JavaScript module resolution
-   - Configure package management strategies
-   - Learn about Node.js event loop and debugging
+   - Install essential JavaScript development tools
+   - Configure .npmrc and package.json
+   - Learn Node.js module resolution
+   - Set up JavaScript library management
+   - Configure Node.js environment variables
 
 2. **JavaScript/TypeScript LSP** (2 hours)
    - Set up tsserver language server
    - Configure ESLint and Prettier integration
-   - Implement TypeScript support
-   - Set up JSX/TSX support
+   - Implement TypeScript type checking
+   - Set up JSX/TSX support for React
    - Configure automatic imports
-   - Set up code organization tools
-   - Implement refactoring capabilities
+   - Implement code organization tools
+   - Learn TypeScript refactoring techniques
 
 3. **Web Development Workflow** (3 hours)
-   - Configure browser integration
-   - Set up live reloading
-   - Implement API testing tools
-   - Configure frontend frameworks
-   - Set up bundlers and build tools
+   - Configure browser integration and live reloading
+   - Set up API testing tools (Postman, REST Client)
+   - Implement frontend framework setup
+   - Configure bundlers (webpack, Vite)
+   - Set up CSS/SCSS processing
    - Configure hot module replacement
-   - Implement JavaScript debugging
+   - Implement local development servers
 
 4. **JavaScript Testing and Debugging** (3 hours)
-   - Set up Jest integration
-   - Configure Chrome debugger
-   - Implement console.log enhancement
+   - Set up Jest for unit testing
+   - Configure Chrome debugger integration
+   - Implement browser DevTools workflow
    - Set up React DevTools
-   - Configure test runners
+   - Configure end-to-end testing
    - Implement test coverage reporting
-   - Set up continuous testing
+   - Learn JavaScript debugging techniques
+
+### JavaScript Development Workflow
+
+```
+┌──────────────────────────────────────────────┐
+│           JavaScript Development Flow        │
+│                                              │
+│  ┌──────────┐       ┌──────────┐             │
+│  │ nvm      │──────▶│ npm/yarn │             │
+│  │ Version  │       │ Project  │             │
+│  │ Control  │       │ Setup    │             │
+│  └──────────┘       └────┬─────┘             │
+│                          │                   │
+│                          ▼                   │
+│  ┌──────────┐       ┌──────────┐             │
+│  │ Jest     │◀──────│ Code     │◀──┐         │
+│  │ Testing  │       │ Writing  │   │         │
+│  │          │       │          │   │         │
+│  └────┬─────┘       └────┬─────┘   │         │
+│       │                  │         │         │
+│       │                  ▼         │         │
+│       │             ┌──────────┐   │         │
+│       └────────────▶│ ESLint/  │   │         │
+│                     │ Prettier │   │         │
+│                     │ Checks   │   │         │
+│                     └────┬─────┘   │         │
+│                          │         │         │
+│                          ▼         │         │
+│                     ┌──────────┐   │         │
+│                     │ Build/   │───┘         │
+│                     │ Bundle   │             │
+│                     │          │             │
+│                     └──────────┘             │
+└──────────────────────────────────────────────┘
+```
+
+### JavaScript Tools Comparison
+
+| Tool           | Purpose                   | Advantages                      | Disadvantages                    |
+|----------------|---------------------------|--------------------------------|---------------------------------|
+| nvm            | Node.js version management| Multiple versions side-by-side  | Bash/Zsh only                    |
+| npm            | Package management        | Standard, universal             | Slower, verbose lock files       |
+| yarn           | Package management        | Faster than npm, workspaces     | Requires separate installation   |
+| pnpm           | Package management        | Disk space efficient, fast      | Less common than npm/yarn        |
+| eslint         | Code linting              | Highly configurable, plugins    | Complex configuration            |
+| prettier       | Code formatting           | Language agnostic, deterministic| Less configurable than others    |
+| babel          | JavaScript transpilation  | Wide browser support            | Complex configuration for adv use|
+| typescript     | Static typing             | Strong type safety              | Learning curve, build step       |
+| webpack        | Module bundling           | Highly configurable, widespread | Complex configuration            |
+| vite           | Module bundling           | Extremely fast, simple config   | Newer, fewer resources           |
+| jest           | Testing                   | All-in-one, snapshot testing    | Slow for large test suites       |
+| tsserver       | Language server           | TypeScript integration          | Occasional performance issues    |
+| esbuild        | JavaScript bundling       | Extremely fast                  | Fewer features than webpack      |
 
 ### Practical Exercises
 
@@ -1370,7 +1406,7 @@ module.exports = {
   testEnvironment: 'node',
   testMatch: ['**/__tests__/**/*.ts', '**/?(*.)+(spec|test).ts'],
   transform: {
-    '^.+\\.ts: 'ts-jest',
+    '^.+\\.ts$': 'ts-jest',
   },
   moduleFileExtensions: ['ts', 'js', 'json', 'node'],
   collectCoverage: true,
@@ -1477,30 +1513,30 @@ Add similar content as the TypeScript file.
 
 1. **Advanced Git Configuration** (3 hours)
    - Set up global Git configuration
-   - Configure Git hooks
-   - Implement commit signing
+   - Configure Git hooks for automation
+   - Implement commit signing with GPG
    - Configure multi-account setup
    - Create useful Git aliases
    - Learn advanced Git commands
-   - Configure branch management strategies
+   - Implement branch management strategies
 
 2. **Neovim Git Integration** (2 hours)
-   - Configure fugitive.vim
-   - Set up git signs for line changes
-   - Implement diffview.nvim
+   - Configure fugitive.vim for Git operations
+   - Set up gitsigns.nvim for line changes
+   - Implement diffview.nvim for diff viewing
    - Configure git blame integration
    - Set up merge conflict resolution
    - Create Git workflow commands
-   - Implement commit browser
+   - Implement GitHub/GitLab integration
 
 3. **Project-Specific Workflows** (2 hours)
-   - Create project-specific settings
-   - Implement per-project configuration
+   - Create project-specific editor settings
+   - Implement per-project configuration files
    - Set up project templates
    - Configure task automation
    - Implement project-specific commands
    - Set up workspace configurations
-   - Create project documentation
+   - Create project documentation templates
 
 4. **Integrated Development Environment** (3 hours)
    - Set up terminal integration in Neovim
@@ -1510,6 +1546,62 @@ Add similar content as the TypeScript file.
    - Configure project-specific terminals
    - Implement build system integration
    - Set up integrated debugging
+
+### Git Workflow Visualization
+
+```
+┌─────────────────────┐
+│   Git Branching     │
+│      Workflow       │
+└────────┬────────────┘
+         │
+┌────────▼────────────┐     ┌─────────────────┐
+│                     │     │                 │
+│      main/master    │     │    hotfix       │
+│       branch        │     │    branches     │
+│                     │     │                 │
+└────────┬────────────┘     └────┬────────────┘
+         │                       │
+         ▼                       │
+┌─────────────────────┐          │
+│                     │          │
+│   develop branch    │◀─────────┘
+│                     │
+└─────────┬───────────┘
+          │
+    ┌─────▼─────┐
+    │           │
+┌───▼───┐   ┌───▼───┐
+│       │   │       │
+│feature│   │feature│
+│branch │   │branch │
+│  1    │   │  2    │
+│       │   │       │
+└───┬───┘   └───┬───┘
+    │           │
+    └─────┬─────┘
+          │
+          ▼
+┌─────────────────────┐
+│    Pull/Merge       │
+│     Request         │
+└─────────────────────┘
+```
+
+### Version Control Tools Comparison
+
+| Tool                | Purpose                      | Advantages                      | Disadvantages                   |
+|---------------------|------------------------------|--------------------------------|--------------------------------|
+| fugitive.vim        | Git operations in Neovim     | Powerful, vim-oriented         | Learning curve                  |
+| gitsigns.nvim       | Git change indicators        | Fast, non-blocking             | Limited to visual indicators    |
+| diffview.nvim       | Git diff visualization       | Enhanced diff display          | Requires Neovim 0.5+            |
+| lazygit             | TUI Git client               | Intuitive, keyboard-driven     | External dependency             |
+| git-flow            | Branching workflow           | Standardized process           | Might be overkill for some      |
+| git-hooks           | Automated git operations     | Prevents bad commits           | Requires local setup            |
+| commitizen          | Standardized commits         | Consistent, conventional       | Additional step in workflow     |
+| husky               | Git hooks for JS projects    | Easy setup, npm integration    | JavaScript-focused              |
+| pre-commit          | Git hook framework           | Language-agnostic              | Python dependency               |
+| gh/lab CLI          | GitHub/GitLab CLI            | API access, automation         | Platform-specific               |
 
 ### Practical Exercises
 
@@ -1584,7 +1676,7 @@ fi
 STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
 
 # Python checks
-PYTHON_FILES=$(echo "$STAGED_FILES" | grep '\.py || true)
+PYTHON_FILES=$(echo "$STAGED_FILES" | grep '\.py$' || true)
 if [ -n "$PYTHON_FILES" ]; then
     echo "Running Python checks..."
     
@@ -1608,7 +1700,7 @@ if [ -n "$PYTHON_FILES" ]; then
 fi
 
 # JavaScript/TypeScript checks
-JS_FILES=$(echo "$STAGED_FILES" | grep -E '\.js$|\.ts$|\.jsx$|\.tsx || true)
+JS_FILES=$(echo "$STAGED_FILES" | grep -E '\.js$|\.ts$|\.jsx$|\.tsx$' || true)
 if [ -n "$JS_FILES" ]; then
     echo "Running JavaScript/TypeScript checks..."
     
@@ -1751,7 +1843,6 @@ vim.keymap.set('n', '<leader>gb', ':Git blame<CR>', { noremap = true, silent = t
 vim.keymap.set('n', '<leader>gd', ':Gvdiffsplit<CR>', { noremap = true, silent = true, desc = 'Git diff split' })
 vim.keymap.set('n', '<leader>gr', ':Gread<CR>', { noremap = true, silent = true, desc = 'Git read (checkout)' })
 vim.keymap.set('n', '<leader>gw', ':Gwrite<CR>', { noremap = true, silent = true, desc = 'Git write (add)' })
-```
 
 4. Configure Which Key group for Git:
 
@@ -2044,41 +2135,67 @@ print("Loaded TypeScript Demo project configuration")
 
 ## Projects and Exercises
 
-1. **Neovim Configuration Overhaul**
+1. **Neovim Configuration Overhaul** [Intermediate] (8-10 hours)
    - Create a complete Lua-based Neovim configuration
-   - Implement language-specific settings
-   - Configure efficient keybindings
-   - Document your setup with comments
+   - Implement language-specific settings for Python, JavaScript, and Ruby
+   - Configure efficient keybindings and mnemonic shortcuts
+   - Document your setup with comprehensive comments
    - Create a Git repository for your configuration
-   - Implement modular organization
-   - Set up automated installation
+   - Implement a modular organization with separate files
+   - Set up an automated installation script
 
-2. **Polyglot Project Development**
-   - Create a project using multiple languages
-   - Implement consistent formatting across languages
-   - Configure testing for all components
-   - Set up an automated build process
-   - Integrate with Git workflows
-   - Create a comprehensive README
-   - Implement continuous integration
+2. **Polyglot Project Development** [Advanced] (10-12 hours)
+   - Create a project using multiple languages (e.g., Python backend, TypeScript frontend)
+   - Implement consistent formatting and linting across languages
+   - Configure testing for all components with unified commands
+   - Set up an automated build process with Make or similar
+   - Integrate with Git hooks for quality control
+   - Create a comprehensive README with setup instructions
+   - Implement continuous integration with GitHub Actions
 
-3. **Custom Development Toolkit**
-   - Create scripts for common development tasks
-   - Implement project scaffolding tools
-   - Build a documentation generator
-   - Create custom linting rules
-   - Develop task automation scripts
-   - Set up environment management tools
-   - Create a unified command interface
+3. **Custom Development Toolkit** [Intermediate] (6-8 hours)
+   - Create shell scripts for common development tasks
+   - Implement project scaffolding tools for different languages
+   - Build a documentation generator with templates
+   - Create custom linting rules for code standards
+   - Develop task automation scripts for repeated operations
+   - Set up environment management tools for projects
+   - Create a unified command interface for your toolkit
 
-4. **Git Workflow Enhancement**
-   - Create custom Git hooks for quality control
+4. **Git Workflow Enhancement** [Intermediate] (4-6 hours)
+   - Create custom Git hooks for code quality checks
    - Implement automated testing before commits
-   - Configure branch policies
-   - Create a PR template and review process
-   - Set up commit message templates
+   - Configure branch policies with naming conventions
+   - Create a PR template and code review checklist
+   - Set up commit message templates for consistency
    - Implement automated changelog generation
    - Configure a Git-based deployment pipeline
+
+## Real-World Applications
+
+The skills you're learning this month directly translate to professional development scenarios:
+
+- **Enterprise Development**: Large organizations require standardized development environments across teams - the skills learned here help set up consistent tools and workflows
+- **Open Source Contribution**: Professional open source projects have strict quality standards - your enhanced Git workflows and testing setups prepare you for contribution
+- **DevOps Integration**: Modern DevOps practices start with developer workflows - your skills bridge development and operations
+- **Remote Development**: Professional developers often work across multiple environments - your customized environment is portable and replicable
+- **Technical Interviews**: Many coding interviews involve live coding sessions - your efficient development environment will demonstrate technical proficiency
+- **Legacy Code Maintenance**: Professional developers often work with existing codebases - your language server and navigation tools make exploring unfamiliar code easier
+
+## Self-Assessment Quiz
+
+Test your understanding of this month's material with these questions:
+
+1. What is the purpose of the Language Server Protocol (LSP) in Neovim?
+2. How would you configure multiple Python versions on the same system?
+3. What are the main differences between package.json and pyproject.toml?
+4. How do you set up project-specific configurations in Neovim?
+5. Explain the difference between virtual environments in Python and Node.js.
+6. What Git hook would you use to ensure code meets quality standards before commits?
+7. How would you debug a Python application from within Neovim?
+8. What is the purpose of tsconfig.json in a TypeScript project?
+9. How would you configure Neovim to use a project's local npm packages for linting?
+10. Explain the difference between linting and formatting, and give an example tool for each.
 
 ## Cross-References
 
@@ -2096,12 +2213,16 @@ print("Loaded TypeScript Demo project configuration")
 
 You should now be able to:
 
-1. Configure and use Neovim as a complete IDE
-2. Set up language-specific development environments
-3. Implement effective testing and debugging workflows
-4. Use Git efficiently with IDE integration
-5. Navigate and search codebases effectively
-6. Create consistent development environments across projects
+1. Configure and use Neovim as a complete IDE with LSP support, Git integration, and debugging capabilities
+2. Set up and manage language-specific development environments for Python and JavaScript/TypeScript
+3. Implement efficient testing and debugging workflows across different programming languages
+4. Use Git effectively with IDE integration, hooks, and advanced workflows
+5. Navigate and search codebases efficiently with fuzzy finding and symbol search
+6. Create consistent development environments across different projects
+7. Debug applications directly from your editor
+8. Implement automated quality control through hooks and linting
+9. Create project-specific tooling configurations
+10. Customize your development workflow for productivity
 
 ## Next Steps
 
