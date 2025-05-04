@@ -1,19 +1,36 @@
 # Month 11: NixOS and Declarative Configuration
 
-This month focuses on the declarative approach to system configuration using NixOS. By the end of this month, you'll understand the Nix language, be able to create custom packages and modules, and maintain your entire system configuration as code.
+This month focuses on the declarative approach to system configuration using NixOS. NixOS represents a paradigm shift from traditional Linux distributions, using a purely functional package manager and allowing you to define your entire system as code. By the end of this month, you'll understand the Nix language, create custom packages and modules, and maintain your entire system configuration as reproducible code.
 
 ## Time Commitment: ~10 hours/week for 4 weeks
+
+## Month 11 Learning Path
+
+```
+Week 1                      Week 2                      Week 3                      Week 4
+┌─────────────────────┐    ┌─────────────────────┐    ┌─────────────────────┐    ┌─────────────────────┐
+│ NixOS Fundamentals  │    │ Package Management  │    │ System Configuration│    │ Advanced NixOS      │
+│ • Philosophy        │    │ • Package Derivation│    │ • Module System     │    │ • System Generations│
+│ • Installation      │───▶│ • Dev Environments  │───▶│ • Services Config   │───▶│ • Distributed Builds│
+│ • Nix Language      │    │ • Reproducible Build│    │ • User Environments │    │ • Multi-System Mgmt │
+│ • Basic Config      │    │ • Dependencies      │    │ • Hardware Config   │    │ • Integration       │
+└─────────────────────┘    └─────────────────────┘    └─────────────────────┘    └─────────────────────┘
+```
 
 ## Learning Objectives
 
 By the end of this month, you should be able to:
 
-1. Install and configure a complete NixOS system
-2. Write and understand configurations in the Nix language
-3. Create custom packages and modules
-4. Implement reproducible development environments
-5. Manage complex system configurations declaratively
-6. Apply NixOS principles for reliable system management
+1. Install and configure a complete NixOS system from scratch
+2. Write and understand configurations using the Nix expression language
+3. Create reproducible development environments using `nix-shell`
+4. Implement custom packages by writing Nix derivations
+5. Develop reusable NixOS modules with proper options and dependencies
+6. Configure system services declaratively using the NixOS module system
+7. Manage system generations and perform reliable rollbacks
+8. Deploy configurations across multiple machines consistently
+9. Integrate NixOS into existing development workflows with version control
+10. Explain the benefits and tradeoffs of the purely functional approach to system configuration
 
 ## Week 1: NixOS Fundamentals and Installation
 
@@ -46,11 +63,43 @@ By the end of this month, you should be able to:
    - Apply and test configurations
    - Use nixos-rebuild command
 
+### Nix Language Syntax Visualization
+
+```
+┌───────────────────────────────────────────────┐
+│                Nix Expression                  │
+│                                               │
+│  ┌─────────┐      ┌─────────┐      ┌────────┐ │
+│  │ Literals│      │Functions│      │ Sets   │ │
+│  └─────────┘      └─────────┘      └────────┘ │
+│       │               │                │      │
+│       ▼               ▼                ▼      │
+│  ┌─────────┐      ┌─────────┐      ┌────────┐ │
+│  │ strings │      │ params  │      │ attrs  │ │
+│  │ integers│      │  body   │      │ inherit│ │
+│  │ paths   │      │         │      │        │ │
+│  └─────────┘      └─────────┘      └────────┘ │
+└───────────────────────────────────────────────┘
+```
+
+### Comparison: Traditional Linux vs. NixOS Approach
+
+| Aspect | Traditional Linux | NixOS |
+|--------|-------------------|-------|
+| Configuration | Scattered across /etc | Centralized in configuration.nix |
+| Package Management | Global package state | Isolated package environments |
+| System Updates | In-place modifications | Atomic system generations |
+| Rollbacks | Difficult, often manual | Built-in, reliable |
+| Reproducibility | Challenging | Guaranteed by design |
+| Multiple Versions | Often conflicts | Side-by-side installation |
+| Learning Curve | Distribution-specific | New paradigm, steeper initially |
+
 ### Resources
 
 - [NixOS Manual](https://nixos.org/manual/nixos/stable/)
 - [Nix Expression Language](https://nixos.org/manual/nix/stable/expressions/expression-language.html)
 - [Getting Started with NixOS](https://nixos.org/guides/nix-pills/)
+- [Learn Nix in Y Minutes](https://learnxinyminutes.com/docs/nix/)
 
 ## Week 2: Package Management and Development Environments
 
@@ -85,11 +134,42 @@ By the end of this month, you should be able to:
    - Create a fully reproducible development environment
    - Share configurations with colleagues
 
+### Nix Package Evaluation Flow
+
+```
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│  Nix         │     │  Derivation  │     │  Build       │
+│  Expression  │────▶│  Creation    │────▶│  Process     │
+│  (.nix)      │     │  (.drv)      │     │  (output)    │
+└──────────────┘     └──────────────┘     └──────────────┘
+        │                                        │
+        │                                        │
+        ▼                                        ▼
+┌──────────────┐                         ┌──────────────┐
+│  Dependency  │                         │  Nix Store   │
+│  Resolution  │                         │  (/nix/store)│
+└──────────────┘                         └──────────────┘
+```
+
+### Development Environment Comparison
+
+| Feature | Traditional Approach | Nix Shell | Docker |
+|---------|----------------------|-----------|--------|
+| Isolation | Partial (via venv, etc.) | Full | Full |
+| Reproducibility | Limited | High | High |
+| Resource Overhead | Low | Low | Medium-High |
+| Host Integration | Seamless | Seamless | Via Mounts/Ports |
+| Portability | Limited | High | High |
+| Version Control | Manual tracking | Built-in | Via Dockerfile |
+| System Integration | Deep | Deep | Containerized |
+| Learning Curve | Low | Medium-High | Medium |
+
 ### Resources
 
 - [Nix Package Manager Guide](https://nixos.org/manual/nix/stable/)
 - [Nixpkgs Manual](https://nixos.org/manual/nixpkgs/stable/)
 - [Home Manager Manual](https://nix-community.github.io/home-manager/)
+- [Nix by Example](https://medium.com/@MrJamesFisher/nix-by-example-a0063a1a4c55)
 
 ## Week 3: System Configuration and Customization
 
@@ -123,10 +203,60 @@ By the end of this month, you should be able to:
    - Configure graphics and display
    - Manage power management
 
+### NixOS Module System Architecture
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    NixOS Configuration                       │
+│                                                             │
+│   ┌─────────────┐   ┌─────────────┐   ┌─────────────┐       │
+│   │ Core System │   │ Hardware    │   │ User        │       │
+│   │ Modules     │   │ Modules     │   │ Modules     │       │
+│   └─────────────┘   └─────────────┘   └─────────────┘       │
+│          │                │                 │               │
+│          ▼                ▼                 ▼               │
+│   ┌─────────────────────────────────────────────────────┐   │
+│   │                   Module System                      │   │
+│   │                                                      │   │
+│   │  ┌────────────┐  ┌────────────┐   ┌────────────┐    │   │
+│   │  │  Options   │  │  Config    │   │ Assertions │    │   │
+│   │  │ Definition │  │ Definition │   │            │    │   │
+│   │  └────────────┘  └────────────┘   └────────────┘    │   │
+│   └─────────────────────────────────────────────────────┘   │
+│                             │                               │
+│                             ▼                               │
+│                     ┌───────────────┐                       │
+│                     │  Evaluation   │                       │
+│                     │  & Merging    │                       │
+│                     └───────────────┘                       │
+│                             │                               │
+│                             ▼                               │
+│                     ┌───────────────┐                       │
+│                     │  System       │                       │
+│                     │  Generation   │                       │
+│                     └───────────────┘                       │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Service Management Comparison
+
+| Feature | Traditional (systemd) | NixOS Approach |
+|---------|----------------------|----------------|
+| Configuration Storage | /etc/systemd/system/ | configuration.nix |
+| Service Dependencies | Unit files | NixOS module options |
+| Configuration Validation | Runtime | Build time |
+| Environment Variables | Unit files | Nix expressions |
+| Service Customization | Drop-in files | Module overrides |
+| Rollback Capability | Limited | Complete |
+| Documentation | Man pages | Option descriptions |
+| Cross-Service Integration | Manual | Automatic through modules |
+
 ### Resources
 
 - [NixOS Module System](https://nixos.org/manual/nixos/stable/index.html#sec-writing-modules)
 - [Writing NixOS Modules](https://nixos.wiki/wiki/Module)
+- [NixOS Options Search](https://search.nixos.org/options)
+- [Home Manager Options](https://nix-community.github.io/home-manager/options.html)
 
 ## Week 4: Advanced NixOS and Integration
 
@@ -160,414 +290,123 @@ By the end of this month, you should be able to:
    - Test configurations automatically
    - Deploy configurations safely
 
+### NixOS Generations and Rollback
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│                   NixOS System Timeline                      │
+│                                                              │
+│                         switch                 switch        │
+│                           │                      │           │
+│                           ▼                      ▼           │
+│ ┌─────────┐     ┌─────────────┐     ┌─────────────┐         │
+│ │ Initial │────▶│ Generation 2│────▶│ Generation 3│◀─┐      │
+│ │ System  │     └─────────────┘     └─────────────┘  │      │
+│ └─────────┘           │                              │      │
+│                        │                              │      │
+│                        │                          rollback   │
+│                        │                              │      │
+│                        ▼                              │      │
+│                  ┌──────────┐                         │      │
+│                  │ GRUB Menu│─────────────────────────┘      │
+│                  └──────────┘                                │
+└──────────────────────────────────────────────────────────────┘
+```
+
+### Multi-System Configuration Management
+
+| Approach | Complexity | Flexibility | Collaboration | Common Use Cases |
+|----------|------------|-------------|---------------|------------------|
+| Single configuration.nix | Low | Limited | Simple | Single machine |
+| Modular config with imports | Medium | Good | Moderate | Personal multi-device setup |
+| Flakes | Medium-High | Excellent | Good | Modern development, pinned deps |
+| NixOps | High | Excellent | Complex | Multi-machine deployment |
+| Colmena | Medium-High | Excellent | Good | Server fleet management |
+| Home Manager | Medium | Excellent | Good | User environment management |
+
 ### Resources
 
 - [NixOS Wiki](https://nixos.wiki/)
 - [Nix Flakes](https://nixos.wiki/wiki/Flakes)
 - [NixOps Manual](https://nixos.org/manual/nixops/stable/)
+- [Colmena](https://github.com/zhaofengli/colmena)
 
 ## Projects and Exercises
 
-### Project 1: Complete NixOS Environment
+### Project 1: Complete NixOS Environment [Intermediate] (8-10 hours)
 
-1. Install NixOS from scratch following the installation guide
-2. Configure your system with the following specifications:
-   - User account with appropriate permissions
-   - Network configuration with firewall rules
-   - Development environment for your primary languages
-   - Desktop environment or window manager configuration
-   - System services for development (databases, web servers)
+Install NixOS from scratch and create a configuration that includes:
+- User account with appropriate permissions
+- Network configuration with firewall rules
+- Development environment for your primary languages
+- Desktop environment or window manager configuration
+- System services for development (databases, web servers)
 
-3. Create a basic configuration.nix:
+### Project 2: Development Environment Shells [Beginner] (4-5 hours)
 
-```nix
-{ config, pkgs, ... }:
+Create shell.nix files for at least three different development environments, including:
+- Python development environment with data science tools
+- Node.js web development environment
+- System monitoring tool development environment
 
-{
-  imports =
-    [ # Include the results of the hardware scan
-      ./hardware-configuration.nix
-    ];
-
-  # Boot loader
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
-  # Networking
-  networking.hostName = "nixos-dev";
-  networking.networkmanager.enable = true;
-  networking.firewall = {
-    enable = true;
-    allowedTCPPorts = [ 22 80 443 ];
-  };
-
-  # Time zone and locale
-  time.timeZone = "America/New_York"; # Adjust for your location
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  # User account
-  users.users.yourusername = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" "docker" ];
-    shell = pkgs.zsh;
-  };
-
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
-
-  # System packages
-  environment.systemPackages = with pkgs; [
-    # Basic utilities
-    vim git wget curl firefox htop
-
-    # Development tools
-    vscode neovim
-    python311 python311Packages.pip
-    nodejs_20
-    gcc gnumake
-
-    # System tools
-    tmux zsh oh-my-zsh
-  ];
-
-  # Services
-  services = {
-    # SSH server
-    openssh.enable = true;
-    
-    # X11 and window manager
-    xserver = {
-      enable = true;
-      desktopManager.xterm.enable = false;
-      displayManager.lightdm.enable = true;
-      windowManager.i3.enable = true;
-    };
-  };
-
-  # Docker
-  virtualisation.docker.enable = true;
-
-  # This value determines the NixOS release with which your system is compatible
-  system.stateVersion = "23.11";
-}
-```
-
-### Project 2: Development Environment Shells
-
-Create shell.nix files for at least three different development environments:
-
-1. Python development environment:
-
-```nix
-{ pkgs ? import <nixpkgs> {} }:
-
-pkgs.mkShell {
-  buildInputs = with pkgs; [
-    # Python with packages
-    (python311.withPackages(ps: with ps; [
-      pip
-      virtualenv
-      pytest
-      black
-      mypy
-      numpy
-      pandas
-    ]))
-    
-    # Development tools
-    poetry
-    gnumake
-  ];
-
-  shellHook = ''
-    echo "Python development environment activated!"
-    export PS1="\e[1;34m(py-dev)\e[0m \w $ "
-  '';
-}
-```
-
-2. Node.js development environment:
-
-```nix
-{ pkgs ? import <nixpkgs> {} }:
-
-pkgs.mkShell {
-  buildInputs = with pkgs; [
-    nodejs_20
-    yarn
-    nodePackages.typescript
-    nodePackages.eslint
-    nodePackages.prettier
-  ];
-
-  shellHook = ''
-    echo "Node.js development environment activated!"
-    export PS1="\e[1;32m(node-dev)\e[0m \w $ "
-    export PATH="$PWD/node_modules/.bin:$PATH"
-  '';
-}
-```
-
-3. System monitoring tool development environment:
-
-```nix
-{ pkgs ? import <nixpkgs> {} }:
-
-pkgs.mkShell {
-  buildInputs = with pkgs; [
-    # Base Python
-    (python311.withPackages(ps: with ps; [
-      psutil
-      py-cpuinfo
-      blessed
-      pandas
-      typer
-    ]))
-    
-    # System utilities for testing
-    htop
-    sysstat
-    lm_sensors
-    iproute2
-  ];
-
-  shellHook = ''
-    echo "System monitoring development environment activated!"
-    export PS1="\e[1;35m(sysmon-dev)\e[0m \w $ "
-  '';
-}
-```
-
-### Project 3: Custom NixOS Module
+### Project 3: Custom NixOS Module [Advanced] (6-8 hours)
 
 Create a custom NixOS module that configures a complete development workspace:
+- Define options for languages, editors, and additional packages
+- Configure services required for development
+- Set up user environment and permissions
+- Create project directories and initial configurations
 
-1. Create a directory structure:
+### Project 4: Full System Configuration with Home Manager [Advanced] (10-12 hours)
 
-```
-~/nixos-config/
-├── configuration.nix
-├── hardware-configuration.nix
-└── modules/
-    └── dev-workspace.nix
-```
+Set up a fully declarative system that includes:
+- System-level configuration with NixOS
+- User-level configuration with Home Manager
+- Dotfiles management
+- Development environment setup
+- Version-controlled configuration repository
 
-2. Implement dev-workspace.nix:
+## Real-World Applications
 
-```nix
-{ config, lib, pkgs, ... }:
+The skills you're learning this month have direct applications in:
 
-with lib;
+- **DevOps and Site Reliability Engineering**: NixOS provides reproducible, reliable deployments with powerful rollback capabilities.
+- **Software Development**: Declarative development environments eliminate "works on my machine" issues.
+- **System Administration**: Managing multiple systems with consistent, version-controlled configurations.
+- **Cloud Infrastructure**: Combining NixOS with tools like Terraform for fully declarative infrastructure.
+- **Embedded Systems**: Creating reliable, reproducible embedded Linux environments.
+- **High-Performance Computing**: Creating consistent compute environments for scientific research.
+- **Blockchain and Web3**: Many blockchain projects use Nix for reproducible builds.
 
-let
-  cfg = config.services.dev-workspace;
-in {
-  options.services.dev-workspace = {
-    enable = mkEnableOption "development workspace configuration";
-    
-    user = mkOption {
-      type = types.str;
-      description = "The user for whom to configure the development workspace";
-    };
-    
-    languages = mkOption {
-      type = types.listOf types.str;
-      default = [];
-      example = [ "python" "javascript" "go" ];
-      description = "Programming languages to install";
-    };
-    
-    editors = mkOption {
-      type = types.listOf types.str;
-      default = [ "vim" ];
-      example = [ "vim" "vscode" "emacs" ];
-      description = "Text editors to install";
-    };
-    
-    extraPackages = mkOption {
-      type = types.listOf types.package;
-      default = [];
-      description = "Extra packages to install";
-    };
-  };
-  
-  config = mkIf cfg.enable {
-    # Install language-specific packages
-    environment.systemPackages = with pkgs; [
-      # Base development tools
-      git
-      gnumake
-      gcc
-      gdb
-    ] 
-    # Add language-specific packages
-    ++ (if elem "python" cfg.languages then [ python311 python311Packages.pip python311Packages.black ] else [])
-    ++ (if elem "javascript" cfg.languages then [ nodejs_20 nodePackages.npm nodePackages.yarn ] else [])
-    ++ (if elem "go" cfg.languages then [ go ] else [])
-    ++ (if elem "rust" cfg.languages then [ rustc cargo rustfmt ] else [])
-    # Add editors
-    ++ (if elem "vim" cfg.editors then [ vim neovim ] else [])
-    ++ (if elem "vscode" cfg.editors then [ vscode ] else [])
-    ++ (if elem "emacs" cfg.editors then [ emacs ] else [])
-    # Add extra packages
-    ++ cfg.extraPackages;
-    
-    # Configure Git globally
-    programs.git = {
-      enable = true;
-      config = {
-        init.defaultBranch = "main";
-      };
-    };
-    
-    # Enable Docker if needed
-    virtualisation.docker.enable = true;
-    users.users.${cfg.user}.extraGroups = [ "docker" ];
-    
-    # Configure terminal and shell
-    programs.zsh.enable = true;
-    users.users.${cfg.user}.shell = pkgs.zsh;
-    
-    # Create project directories
-    system.activationScripts.devWorkspace = ''
-      mkdir -p /home/${cfg.user}/projects
-      mkdir -p /home/${cfg.user}/projects/python
-      mkdir -p /home/${cfg.user}/projects/javascript
-      mkdir -p /home/${cfg.user}/projects/experiments
-      chown -R ${cfg.user}:users /home/${cfg.user}/projects
-    '';
-  };
-}
-```
+## Self-Assessment Quiz
 
-3. Import and use in configuration.nix:
+Test your knowledge of the concepts covered this month:
 
-```nix
-{ config, pkgs, ... }:
+1. What does it mean that Nix is a "purely functional" package manager?
+2. How does the NixOS approach to system configuration differ from traditional Linux distributions?
+3. What is the purpose of the Nix store located at `/nix/store`?
+4. Explain the difference between `nixos-rebuild switch` and `nixos-rebuild test`.
+5. What is a Nix derivation and how does it relate to a package?
+6. How would you pin a specific version of a package in NixOS?
+7. What is the purpose of the `imports` attribute in a NixOS configuration?
+8. How does NixOS handle system rollbacks?
+9. What is the role of the `mkOption` function in NixOS module development?
+10. Explain the concept of "generations" in NixOS and how they contribute to system reliability.
 
-{
-  imports =
-    [ 
-      ./hardware-configuration.nix
-      ./modules/dev-workspace.nix
-    ];
-  
-  # Enable the development workspace
-  services.dev-workspace = {
-    enable = true;
-    user = "yourusername";
-    languages = [ "python" "javascript" "rust" ];
-    editors = [ "vim" "vscode" ];
-    extraPackages = with pkgs; [
-      firefox
-      tmux
-      ripgrep
-      fd
-    ];
-  };
-  
-  # Rest of your system configuration
-  # ...
-}
-```
+## Connections to Your Learning Journey
 
-### Project 4: Full System Configuration with Home Manager
+- **Previous Month**: In Month 10, you worked with cloud integration. NixOS extends those concepts by allowing you to declaratively define your entire system, both locally and in the cloud.
+- **Next Month**: In Month 12, you'll build a professional portfolio. The NixOS skills you develop this month will provide powerful examples of advanced Linux expertise.
+- **Future Applications**: The declarative approach learned with NixOS will inform approaches to infrastructure as code, container orchestration, and modern DevOps practices.
 
-Set up a fully declarative system with Home Manager:
+## Cross-References
 
-1. Add home-manager as a NixOS module:
-
-```nix
-{ config, pkgs, ... }:
-
-{
-  imports = [ 
-    <home-manager/nixos>
-  ];
-
-  # Home Manager configuration
-  home-manager.users.yourusername = { pkgs, ... }: {
-    # Home Manager packages
-    home.packages = with pkgs; [
-      ripgrep
-      fd
-      bat
-      exa
-      fzf
-    ];
-
-    # Git configuration
-    programs.git = {
-      enable = true;
-      userName = "Your Name";
-      userEmail = "your.email@example.com";
-      extraConfig = {
-        init.defaultBranch = "main";
-        pull.rebase = true;
-      };
-    };
-
-    # Neovim configuration
-    programs.neovim = {
-      enable = true;
-      viAlias = true;
-      vimAlias = true;
-      extraConfig = ''
-        set number
-        set relativenumber
-        set tabstop=4
-        set shiftwidth=4
-        set expandtab
-        set smartindent
-      '';
-      plugins = with pkgs.vimPlugins; [
-        vim-nix
-        vim-surround
-        vim-commentary
-      ];
-    };
-
-    # Tmux configuration
-    programs.tmux = {
-      enable = true;
-      shortcut = "a";
-      keyMode = "vi";
-      customPaneNavigationAndResize = true;
-      extraConfig = ''
-        # Status bar
-        set -g status-bg black
-        set -g status-fg white
-        set -g status-left "#[fg=green]#S #[fg=yellow]#I #[fg=cyan]#P"
-        set -g status-right "#[fg=cyan]%d %b %R"
-      '';
-    };
-
-    # Zsh configuration
-    programs.zsh = {
-      enable = true;
-      enableAutosuggestions = true;
-      enableSyntaxHighlighting = true;
-      oh-my-zsh = {
-        enable = true;
-        theme = "robbyrussell";
-        plugins = [ "git" "docker" "python" "node" ];
-      };
-      shellAliases = {
-        ll = "ls -la";
-        update = "sudo nixos-rebuild switch";
-        gs = "git status";
-        gp = "git push";
-      };
-    };
-
-    # Allow unfree packages
-    nixpkgs.config.allowUnfree = true;
-
-    # Enable home-manager
-    programs.home-manager.enable = true;
-  };
-}
-```
+- **Previous Month**: [Month 10: Cloud Integration and Remote Development](/learning_guides/month-10-cloud.md)
+- **Next Month**: [Month 12: Career Portfolio and Advanced Projects](/learning_guides/month-12-portfolio.md)
+- **Related Guides**: 
+  - [System Maintenance and Performance Tuning](/learning_guides/month-07-maintenance.md) for performance optimization
+  - [Containerization and Virtual Environments](/learning_guides/month-06-containers.md) for integration with containers
+  - [Version Control Strategy](/configuration/development/docs/version_control_strategy.md) for managing configurations
 
 ## Assessment
 
@@ -579,6 +418,8 @@ You should now be able to:
 4. Build custom NixOS modules
 5. Manage your entire system configuration declaratively
 6. Perform system updates and rollbacks effectively
+7. Deploy configurations across multiple machines
+8. Integrate NixOS into your existing workflow
 
 ## Next Steps
 
@@ -588,23 +429,21 @@ In Month 12, we'll build on this knowledge by:
 - Contributing to open source projects
 - Preparing for professional Linux/DevOps roles
 
-## Cross-References
-
-- The [NixOS Installation Guide](/installation/nixos/nixos-installation-guide.md) provides detailed steps for initial setup
-- For performance optimization, refer to [System Maintenance](/learning_guides/month-07-maintenance.md)
-- For network configuration, see the [Networking Guide](/troubleshooting/networking.md)
-- Review [Month 6: Containerization](/learning_guides/month-06-containers.md) for integrating containers with NixOS
-- See [Version Control Strategy](/configuration/development/docs/version_control_strategy.md) for managing NixOS configurations
-
 ## Acknowledgements
 
 This learning guide was developed with assistance from Anthropic's Claude AI assistant, which helped with:
 - Learning path structure and organization
-- Nix code examples and configuration templates
+- Resource recommendations
 - Project ideas and exercises
+- Visualization diagrams
+- Comparison tables
 
 Claude was used as a development aid while all final implementation decisions and verification were performed by Joshua Michael Hall.
 
 ## Disclaimer
 
 This guide is provided "as is", without warranty of any kind. Always make backups before making system changes. NixOS's rollback feature provides additional protection, but proper backups are still essential.
+
+---
+
+> "Master the basics. Then practice them every day without fail." - John C. Maxwell
