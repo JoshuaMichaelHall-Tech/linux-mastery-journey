@@ -1,4 +1,27 @@
-curriculum designed to systematically build expertise:
+# Linux Mastery Journey
+
+A comprehensive, structured approach to mastering Arch Linux and NixOS for professional software development.
+
+![Version](https://img.shields.io/badge/Version-1.0.0-green)
+![License](https://img.shields.io/badge/License-MIT-orange)
+
+## Overview
+
+This repository documents my journey transitioning from macOS to Linux (Arch and NixOS) as a professional software engineer. It serves as both personal documentation and a structured learning path for others interested in gaining deep Linux proficiency.
+
+### Philosophy
+
+This project is built on these core principles:
+
+- **Mastery Through Deliberate Practice**: Regular, focused practice of specific skills
+- **Progressive Skill Acquisition**: Learn fundamentals before moving to advanced concepts
+- **Deep Understanding Over Surface Knowledge**: Thoroughly understand each component of the system
+- **Career-Oriented Learning**: Focus on skills that provide a professional advantage
+- **Documentation as Learning**: Capture knowledge acquisition in real-time
+
+## Learning Curriculum
+
+The Linux Mastery Journey follows a 12-month structured curriculum designed to systematically build expertise:
 
 ### Phase 1: Foundations (Months 1-3)
 - **Month 1:** [Base System Installation and Core Concepts](/learning_guides/month-01-base-system.md)
@@ -20,6 +43,12 @@ curriculum designed to systematically build expertise:
 - **Month 10:** [Cloud Integration and Remote Development](/learning_guides/month-10-cloud.md)
 - **Month 11:** [NixOS and Declarative Configuration](/learning_guides/month-11-nixos.md)
 - **Month 12:** [Career Portfolio and Advanced Projects](/learning_guides/month-12-portfolio.md)
+
+### Bonus Learning Modules
+- [Mouseless Terminal-Centric Workflow](/learning_guides/bonus-mouseless-terminal-centric.md)
+  - [Mouseless Workflow Exercises](/learning_guides/bonus-mouseless-exercises.md)
+- [AI Integration for Linux Development](/learning_guides/bonus-ai-integration.md)
+  - [AI Integration Exercises](/learning_guides/bonus-ai-exercises.md)
 
 → [Explore the Full Learning Curriculum](/learning_guides)
 
@@ -112,6 +141,13 @@ Development tools configuration for:
 
 → [Explore All Configuration Files](/configuration)
 
+## Installation Guides
+
+Step-by-step instructions for setting up your Linux environment:
+
+- [Arch Linux Installation Guide](/installation/arch/arch-linux-installation-guide.md)
+- [NixOS Installation Guide](/installation/nixos/nixos-installation-guide.md)
+
 ## Troubleshooting
 
 Comprehensive troubleshooting guides for common Linux issues:
@@ -136,24 +172,31 @@ Comprehensive troubleshooting guides for common Linux issues:
 
 → [Explore All Troubleshooting Guides](/troubleshooting)
 
-## Essential Resources
+## References and Resources
 
-### Books
+### Reference Guides
+- [Linux Commands & Keyboard Shortcuts](/reference/linux-shortcuts.md)
+- [Linux Terminology Glossary](/reference/linux-glossary.md)
+- [Progress Tracking System](/progress-tracking-system.md)
+
+### Essential Resources
+
+#### Books
 - **The Linux Command Line** by William Shotts - Fundamental command line skills
 - **How Linux Works** by Brian Ward - Understanding Linux internals
 - **Unix and Linux System Administration Handbook** - Comprehensive reference
 
-### Online Documentation
+#### Online Documentation
 - [Arch Linux Wiki](https://wiki.archlinux.org/) - Definitive Linux documentation resource
 - [NixOS Manual](https://nixos.org/manual/nixos/stable/) - Official NixOS documentation
 - [Digital Ocean Community Tutorials](https://www.digitalocean.com/community/tutorials) - Practical guides for Linux concepts
 
-### Tools
+#### Tools
 - [Explainshell](https://explainshell.com/) - Interactive explanation of shell commands
 - [tldr pages](https://tldr.sh/) - Simplified and community-driven man pages
 - [ShellCheck](https://www.shellcheck.net/) - Script analysis tool
 
-### Community Resources
+#### Community Resources
 - [Arch Linux Forums](https://bbs.archlinux.org/) - Community support and discussion
 - [NixOS Discourse](https://discourse.nixos.org/) - NixOS community forum
 - [r/archlinux](https://www.reddit.com/r/archlinux/) - Reddit Arch Linux community
@@ -189,6 +232,9 @@ linux-mastery-journey/
 │   └── ...                     # Additional guides
 ├── projects/                   # Example projects that demonstrate skills
 │   └── system-monitor/         # Terminal-based system monitoring tool
+├── reference/                  # Quick reference guides and resources
+│   ├── linux-shortcuts.md      # Keyboard shortcuts reference
+│   └── linux-glossary.md       # Linux terminology glossary
 └── README.md                   # This file
 ```
 
@@ -197,8 +243,8 @@ linux-mastery-journey/
 If you're following along with this journey, start here:
 
 1. Choose your installation path:
-   - [Arch Linux Installation Guide](/installation/arch/README.md)
-   - [NixOS Installation Guide](/installation/nixos/README.md)
+   - [Arch Linux Installation Guide](/installation/arch/arch-linux-installation-guide.md)
+   - [NixOS Installation Guide](/installation/nixos/nixos-installation-guide.md)
 
 2. Follow the [Month 1 Guide](/learning_guides/month-01-base-system.md) and [Month 1 Exercises](/learning_guides/month-01-exercises.md) to establish your foundation
 
